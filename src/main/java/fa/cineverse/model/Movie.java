@@ -54,7 +54,7 @@ public class Movie {
 	private LocalDateTime updatedAt;
 	
 	@ManyToOne
-	@JoinColumn()
+	@JoinColumn(name="movie_type_id")
 	private MovieType movieType;
 	
 	

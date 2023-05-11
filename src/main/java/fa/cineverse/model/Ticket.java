@@ -18,12 +18,12 @@ public class Ticket {
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
-	
+	 
 	@ManyToOne
 	@JoinColumns(value = { 
-			@JoinColumn(),
-			@JoinColumn(),
-			@JoinColumn()
+			@JoinColumn(name = "movie_id"),
+			@JoinColumn(name = "room_id"),
+			@JoinColumn(name = "schedule_date_time")
 	})
 	private Schedule schedule;
 	

@@ -23,11 +23,11 @@ public class Seat {
 	private LocalDateTime updatedAt;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="seat_type_id")
 	private SeatType seatType;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="room_id") 
 	private Room room;
 	
 	@OneToMany(mappedBy = "seat")

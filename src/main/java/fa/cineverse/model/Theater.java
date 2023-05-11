@@ -25,7 +25,7 @@ public class Theater {
 	private LocalDateTime updatedAt;
 	
 	@ManyToOne
-	@JoinColumn()
+	@JoinColumn(name="province_id")
 	private Province province;
 	
 	@OneToMany(mappedBy = "theater")

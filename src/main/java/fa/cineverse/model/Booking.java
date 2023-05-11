@@ -28,6 +28,7 @@ public class Booking {
 	private Customer customer;
 	
 	@OneToOne
+	@JoinColumn(name = "payment_id") 
 	private Payment payment;
 	
 	@OneToMany(mappedBy = "booking")

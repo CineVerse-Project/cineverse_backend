@@ -29,12 +29,12 @@ public class Schedule {
 	
 	@ManyToOne
 	@MapsId("movieId")
-	@JoinColumn
+	@JoinColumn(name="movie_id",columnDefinition = "varchar(30)")
 	private Movie movie;
 	
 	@ManyToOne
 	@MapsId("roomId")
-	@JoinColumn
+	@JoinColumn(name="room_id",columnDefinition = "varchar(20)")
 	private Room room;
 	
 	private boolean isDelete;
