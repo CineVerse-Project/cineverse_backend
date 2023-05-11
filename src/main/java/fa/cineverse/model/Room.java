@@ -7,11 +7,15 @@ package fa.cineverse.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * @author HuuNQ
@@ -22,6 +26,11 @@ import javax.persistence.OneToMany;
 @Entity
 public class Room {
 	@Id
+	@Column(columnDefinition = "VARCHAR(20)")
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "RO"),
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String roomId;
 	
 	private int seatTotal;

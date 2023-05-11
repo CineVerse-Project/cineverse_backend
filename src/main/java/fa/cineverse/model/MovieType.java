@@ -3,9 +3,13 @@ package fa.cineverse.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 
@@ -13,6 +17,11 @@ import lombok.Data;
 @Data
 public class MovieType {
 	@Id
+	@Column(columnDefinition = "VARCHAR(20)")
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "MT"),
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String movieTypeId;
 	
 	private String moveTypeName;

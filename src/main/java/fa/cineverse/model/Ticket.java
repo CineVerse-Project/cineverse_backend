@@ -2,15 +2,24 @@ package fa.cineverse.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 public class Ticket {
 	@Id
+	@Column(columnDefinition = "VARCHAR(20)")
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "TK"),
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String ticketId;
 	
 	private boolean isDelete;
@@ -32,7 +41,7 @@ public class Ticket {
 	private Seat seat;
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="booking_id")
 	private Booking booking;
 
 	public Ticket() {

@@ -3,16 +3,25 @@ package fa.cineverse.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 public class Booking {
 	@Id
+	@Column(columnDefinition = "VARCHAR(20)")
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "BK"),
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String bookingId;
 	
 	private int ticketTotal;

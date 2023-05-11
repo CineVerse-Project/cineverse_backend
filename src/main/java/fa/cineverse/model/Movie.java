@@ -8,21 +8,24 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-/**
- * @author HuuNQ
- *
- * 11 May 2023
- * 
- */
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 public class Movie {
 	@Id
+	@Column(columnDefinition = "VARCHAR(20)")
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "MV"),
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String movieId;
 	
 	private String movieName;

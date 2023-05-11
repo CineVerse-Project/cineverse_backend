@@ -6,19 +6,22 @@ package fa.cineverse.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-/**
- * @author HuuNQ
- *
- * 11 May 2023
- * 
- */
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 public class Payment {
 	@Id
+	@Column(columnDefinition = "VARCHAR(20)")
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "PM"),
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String paymentId;
 	
 	private Double totalMoney;
