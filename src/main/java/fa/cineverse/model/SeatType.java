@@ -7,50 +7,50 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-@Entity 
-public class MovieType {
+@Entity
+public class SeatType {
 	@Id
-	private String movieTypeId;
+	private String seatTypeId;
 	
-	private String moveTypeName;
-	
+	private String seatTypeName;
+
 	private boolean isDelete;
 	
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
 	
-	@OneToMany(mappedBy = "movieType")
-	private List<Movie> movie;
+	@OneToMany(mappedBy = "seatType")
+	private List<Seat> seats;
 
-	public MovieType() {
+	public SeatType() {
 		super();
 	}
 	
-	public MovieType(String movieTypeId, String moveTypeName, boolean isDelete, LocalDateTime createdAt,
+	public SeatType(String seatTypeId, String seatTypeName, boolean isDelete, LocalDateTime createdAt,
 			LocalDateTime updatedAt) {
 		super();
-		this.movieTypeId = movieTypeId;
-		this.moveTypeName = moveTypeName;
+		this.seatTypeId = seatTypeId;
+		this.seatTypeName = seatTypeName;
 		this.isDelete = isDelete;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
 
-	public String getMovieTypeId() {
-		return movieTypeId;
+	public String getSeatTypeId() {
+		return seatTypeId;
 	}
 
-	public void setMovieTypeId(String movieTypeId) {
-		this.movieTypeId = movieTypeId;
+	public void setSeatTypeId(String seatTypeId) {
+		this.seatTypeId = seatTypeId;
 	}
 
-	public String getMoveTypeName() {
-		return moveTypeName;
+	public String getSeatTypeName() {
+		return seatTypeName;
 	}
 
-	public void setMoveTypeName(String moveTypeName) {
-		this.moveTypeName = moveTypeName;
+	public void setSeatTypeName(String seatTypeName) {
+		this.seatTypeName = seatTypeName;
 	}
 
 	public boolean isDelete() {
@@ -77,12 +77,12 @@ public class MovieType {
 		this.updatedAt = updatedAt;
 	}
 
-	public List<Movie> getMovie() {
-		return movie;
+	public List<Seat> getSeats() {
+		return seats;
 	}
 
-	public void setMovie(List<Movie> movie) {
-		this.movie = movie;
+	public void setSeats(List<Seat> seats) {
+		this.seats = seats;
 	}
 	
 	

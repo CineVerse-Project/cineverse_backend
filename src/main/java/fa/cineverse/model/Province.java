@@ -7,50 +7,46 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-@Entity 
-public class MovieType {
+@Entity
+public class Province {
 	@Id
-	private String movieTypeId;
-	
-	private String moveTypeName;
-	
+	private String provinceId;
+	private String provinceName;
 	private boolean isDelete;
-	
 	private LocalDateTime createdAt;
-	
 	private LocalDateTime updatedAt;
 	
-	@OneToMany(mappedBy = "movieType")
-	private List<Movie> movie;
-
-	public MovieType() {
+	@OneToMany(mappedBy = "province")
+	private List<Theater> theaters;
+	
+	public Province() {
 		super();
 	}
-	
-	public MovieType(String movieTypeId, String moveTypeName, boolean isDelete, LocalDateTime createdAt,
+
+	public Province(String provinceId, String provinceName, boolean isDelete, LocalDateTime createdAt,
 			LocalDateTime updatedAt) {
 		super();
-		this.movieTypeId = movieTypeId;
-		this.moveTypeName = moveTypeName;
+		this.provinceId = provinceId;
+		this.provinceName = provinceName;
 		this.isDelete = isDelete;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
 
-	public String getMovieTypeId() {
-		return movieTypeId;
+	public String getProvinceId() {
+		return provinceId;
 	}
 
-	public void setMovieTypeId(String movieTypeId) {
-		this.movieTypeId = movieTypeId;
+	public void setProvinceId(String provinceId) {
+		this.provinceId = provinceId;
 	}
 
-	public String getMoveTypeName() {
-		return moveTypeName;
+	public String getProvinceName() {
+		return provinceName;
 	}
 
-	public void setMoveTypeName(String moveTypeName) {
-		this.moveTypeName = moveTypeName;
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
 	}
 
 	public boolean isDelete() {
@@ -77,12 +73,12 @@ public class MovieType {
 		this.updatedAt = updatedAt;
 	}
 
-	public List<Movie> getMovie() {
-		return movie;
+	public List<Theater> getTheater() {
+		return theaters;
 	}
 
-	public void setMovie(List<Movie> movie) {
-		this.movie = movie;
+	public void setTheater(List<Theater> theaters) {
+		this.theaters = theaters;
 	}
 	
 	
