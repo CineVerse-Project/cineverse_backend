@@ -31,23 +31,22 @@ public class Customer {
 	private LocalDate birthday;
 	private boolean gender;
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id")
-	private User userId;
+	@JoinColumn(name="username")
+	private User user;
 	
 	public Customer() {
 		super();
 	}
 	
-	public Customer(int customerId, String fullName, String address, String phoneNumber, LocalDate birthday,
-			boolean gender, User user) {
+	public Customer(String fullName, String email, String address, String phoneNumber,
+			LocalDate birthday, boolean gender) {
 		super();
-		this.customerId = customerId;
 		this.fullName = fullName;
+		this.email = email;
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 		this.birthday = birthday;
 		this.gender = gender;
-		this.userId = user;
 	}
 
 	public int getCustomerId() {
@@ -80,17 +79,19 @@ public class Customer {
 	public void setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
 	}
-	public User getUserId() {
-		return userId;
-	}
-	public void setUserId(User user) {
-		this.userId = user;
-	}
 	public boolean isGender() {
 		return gender;
 	}
 	public void setGender(boolean gender) {
 		this.gender = gender;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }

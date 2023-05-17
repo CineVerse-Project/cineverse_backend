@@ -33,11 +33,10 @@ public class Booking {
 	private LocalDateTime updatedAt;
 	
 	@ManyToOne
-	@JoinColumn(name = "customer_id")
+	@JoinColumn(name = "customer_id") 
 	private Customer customer;
 	
-	@OneToOne
-	@JoinColumn(name = "payment_id") 
+	@OneToOne(mappedBy = "booking")
 	private Payment payment;
 	
 	@OneToMany(mappedBy = "booking")

@@ -18,7 +18,7 @@ public class UserRole {
 	private int userRoleId;
 	
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="username")
 	private User user;
 	
 	@ManyToOne

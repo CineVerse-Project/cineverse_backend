@@ -2,6 +2,7 @@ package fa.cineverse.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,12 +19,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name="user_tbl")
 public class User {
-	@Id 
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="user_id")
-	private int userId;
-	
-	@Column(columnDefinition = "NVARCHAR(255)",unique = true,nullable = false)
+	@Id
+	@Column(columnDefinition = "NVARCHAR(255)")
 	private String username;
 	
 	private String password;
@@ -37,35 +34,26 @@ public class User {
 	private LocalDateTime lastLogin;
 	@Column(name="is_delete")
 	private boolean isDelete;
-	@OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<UserRole> userRole;
 	
-	@OneToOne(mappedBy = "userId")
-	@JoinColumn(name="user_id")
+	@OneToOne(mappedBy = "user")
+	@JoinColumn(name="username")
 	private Customer customer;
 	
 	public User() {
 		
 	}
 
-	public User(int userId, String username, String password, LocalDateTime createdDate, LocalDateTime updateAt,
+	public User(String username, String password, LocalDateTime createdDate, LocalDateTime updateAt,
 			LocalDateTime lastLogin, boolean isDelete) {
 		super();
-		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.createdDate = createdDate;
 		this.updateAt = updateAt;
 		this.lastLogin = lastLogin;
 		this.isDelete = isDelete;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
 	}
 
 	public String getUsername() {
@@ -131,6 +119,21 @@ public class User {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof User))
+			return false;
+		User other = (User) obj;
+		return Objects.equals(username, other.username);
 	}
 
 

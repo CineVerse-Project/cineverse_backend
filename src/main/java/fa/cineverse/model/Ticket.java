@@ -37,7 +37,7 @@ public class Ticket {
 	private Schedule schedule;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name = "seat_id")
 	private Seat seat;
 
 	@ManyToOne
