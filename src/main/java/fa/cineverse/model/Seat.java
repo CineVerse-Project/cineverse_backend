@@ -13,7 +13,10 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@JsonIgnoreProperties({"tickets"})
 public class Seat {
 	@Id
 	@Column(columnDefinition = "VARCHAR(20)")

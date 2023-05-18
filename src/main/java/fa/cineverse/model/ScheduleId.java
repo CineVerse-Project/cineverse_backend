@@ -16,7 +16,6 @@ public class ScheduleId implements Serializable{
 
 	private LocalDateTime sheduleDateTime;
 	
-	private String movieId;
 	
 	private String roomId;
 	
@@ -24,19 +23,11 @@ public class ScheduleId implements Serializable{
 		super();
 	}
 
-	public ScheduleId(LocalDateTime sheduleDateTime, String movieId, String roomId) {
+	public ScheduleId(LocalDateTime sheduleDateTime, String roomId) {
 		super();
 		this.setSheduleDateTime(sheduleDateTime);
-		this.movieId = movieId;
+
 		this.roomId = roomId;
-	}
-
-	public String getMovieId() {
-		return movieId;
-	}
-
-	public void setMovieId(String movieId) {
-		this.movieId = movieId;
 	}
 
 	public String getRoomId() {

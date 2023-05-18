@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author HuuNQ
  *
@@ -24,13 +26,14 @@ import org.hibernate.annotations.GenericGenerator;
  * 
  */
 @Entity
+@JsonIgnoreProperties({"seats","schedules"})
 public class Room {
 	@Id
 	@Column(columnDefinition = "VARCHAR(20)")
     @GeneratedValue(generator = "prod-generator")
     @GenericGenerator(name = "prod-generator",
             parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "RO"),
-            strategy = "fa.cineverse.common.IdentityCodeGenerator")
+            strategy = "fa.cineverse.common.IdentityCodeGenerator")  
 	private String roomId;
 	
 	private int seatTotal;
@@ -48,7 +51,7 @@ public class Room {
 	private LocalDateTime updatedAt;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="theater_id")
 	private Theater theater;
 	
 	@OneToMany(mappedBy = "room")

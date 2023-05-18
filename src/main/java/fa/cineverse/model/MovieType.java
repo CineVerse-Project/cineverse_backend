@@ -11,10 +11,13 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 @Entity 
 @Data
+@JsonIgnoreProperties({"movie"})
 public class MovieType {
 	@Id
 	@Column(columnDefinition = "VARCHAR(20)")
