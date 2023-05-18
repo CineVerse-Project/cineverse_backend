@@ -16,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class Theater {
 	@Id
-	@Column(columnDefinition = "VARCHAR(20)")
+	@Column(columnDefinition = "varchar(10)")
     @GeneratedValue(generator = "prod-generator")
     @GenericGenerator(name = "prod-generator",
             parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "TT"),
@@ -39,6 +39,8 @@ public class Theater {
 	
 	@OneToMany(mappedBy = "theater")
 	private List<Room> room;
+	
+
 	
 	public Theater() {
 		super();
