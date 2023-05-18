@@ -14,7 +14,10 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@JsonIgnoreProperties({"payment", "tickets"})
 public class Booking {
 	@Id
 	@Column(columnDefinition = "VARCHAR(20)")

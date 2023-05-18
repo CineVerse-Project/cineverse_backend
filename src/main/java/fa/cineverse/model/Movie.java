@@ -18,52 +18,53 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@JsonIgnoreProperties({ "schedules" })
 public class Movie {
 	@Id
 	@Column(columnDefinition = "VARCHAR(20)")
-    @GeneratedValue(generator = "prod-generator")
-    @GenericGenerator(name = "prod-generator",
-            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "MV"),
-            strategy = "fa.cineverse.common.IdentityCodeGenerator")
+	@GeneratedValue(generator = "prod-generator")
+	@GenericGenerator(name = "prod-generator", parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "MV"), strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String movieId;
-	
+
 	private String movieName;
-	
+
 	private LocalDate startDate;
-	
+
 	private LocalDate endDate;
-	
+
 	private String actor;
-	
+
 	private String description;
-	
+
 	private String director;
-	
+
 	private String filmStudio;
-	
+
 	private Float duration;
-	
+
 	private String imageUrl;
-	
+
 	private String trailerUrl;
-	
+
 	private String version;
-	
+
 	private boolean isDelete;
-	
+
+	private int status;
+
 	private LocalDateTime createdAt;
-	
+
 	private LocalDateTime updatedAt;
-	
+
 	@ManyToOne
-	@JoinColumn(name="movie_type_id")
+	@JoinColumn(name = "movie_type_id")
 	private MovieType movieType;
-	
-	
+
 	@OneToMany(mappedBy = "movie")
 	private List<Schedule> schedules;
-
 
 	public Movie() {
 		super();
@@ -71,7 +72,8 @@ public class Movie {
 
 	public Movie(String movieId, String movieName, LocalDate startDate, LocalDate endDate, String actor,
 			String description, String director, String filmStudio, Float duration, String imageUrl, String trailerUrl,
-			String version, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt, MovieType movieType) {
+			String version, boolean isDelete, int status, LocalDateTime createdAt, LocalDateTime updatedAt,
+			MovieType movieType, List<Schedule> schedules) {
 		super();
 		this.movieId = movieId;
 		this.movieName = movieName;
@@ -86,9 +88,11 @@ public class Movie {
 		this.trailerUrl = trailerUrl;
 		this.version = version;
 		this.isDelete = isDelete;
+		this.status = status;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.movieType = movieType;
+		this.schedules = schedules;
 	}
 
 	public String getMovieId() {
@@ -226,7 +230,13 @@ public class Movie {
 	public void setSchedules(List<Schedule> schedules) {
 		this.schedules = schedules;
 	}
-	
-	
-	
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 }
