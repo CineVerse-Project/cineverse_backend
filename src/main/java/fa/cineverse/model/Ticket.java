@@ -29,8 +29,7 @@ public class Ticket {
 	private LocalDateTime updatedAt;
 	 
 	@ManyToOne
-	@JoinColumns(value = { 
-			@JoinColumn(name = "movie_id"),
+	@JoinColumns(value = {  
 			@JoinColumn(name = "room_id"),
 			@JoinColumn(name = "schedule_date_time")
 	})

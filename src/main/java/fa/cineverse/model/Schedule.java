@@ -9,11 +9,12 @@ import java.util.List;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author HuuNQ
@@ -22,13 +23,13 @@ import javax.persistence.OneToMany;
  * 
  */
 @Entity
+@JsonIgnoreProperties({"tickets"})
 public class Schedule {
 	
 	@EmbeddedId
 	private  ScheduleId scheduleId;
 	
 	@ManyToOne
-	@MapsId("movieId")
 	@JoinColumn(name="movie_id",columnDefinition = "varchar(30)")
 	private Movie movie;
 	
