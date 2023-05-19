@@ -31,8 +31,6 @@ public class JwtCommon {
     public String generateToken(Authentication authentication){
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         return Jwts.builder().setSubject(user.getUsername())
-        		.claim("roles",user.getAuthorities().toString())
-        		.setIssuer("HuuNQ")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+expiredTokenMs))
                 .signWith(SignatureAlgorithm.HS512, secretKey)

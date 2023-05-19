@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="user_tbl")
-@JsonIgnoreProperties({"customer"})
+@JsonIgnoreProperties({"customer","userRole"})
 public class User {
 	@Id
 	@Column(columnDefinition = "NVARCHAR(255)")
@@ -35,6 +35,8 @@ public class User {
 	private LocalDateTime lastLogin;
 	@Column(name="is_delete")
 	private boolean isDelete;
+	@Column(name="reset_password_token",columnDefinition="VARCHAR(25)")
+	private String resetPasswordToken;
 	@OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<UserRole> userRole;
 	
@@ -46,8 +48,11 @@ public class User {
 		
 	}
 
+	
+
 	public User(String username, String password, LocalDateTime createdDate, LocalDateTime updateAt,
-			LocalDateTime lastLogin, boolean isDelete) {
+			LocalDateTime lastLogin, boolean isDelete, String resetPasswordToken, List<UserRole> userRole,
+			Customer customer) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -55,72 +60,118 @@ public class User {
 		this.updateAt = updateAt;
 		this.lastLogin = lastLogin;
 		this.isDelete = isDelete;
+		this.resetPasswordToken = resetPasswordToken;
+		this.userRole = userRole;
+		this.customer = customer;
 	}
-
+	
 	public String getUsername() {
 		return username;
 	}
+
+
 
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+
+
 	public String getPassword() {
 		return password;
 	}
+
+
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+
+
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
+
+
 
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
+
+
 	public LocalDateTime getUpdateAt() {
 		return updateAt;
 	}
+
+
 
 	public void setUpdateAt(LocalDateTime updateAt) {
 		this.updateAt = updateAt;
 	}
 
+
+
 	public LocalDateTime getLastLogin() {
 		return lastLogin;
 	}
+
+
 
 	public void setLastLogin(LocalDateTime lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 
+
+
 	public boolean isDelete() {
 		return isDelete;
 	}
 
+
+
 	public void setDelete(boolean isDelete) {
 		this.isDelete = isDelete;
 	}
-	
+
+
+
+	public String getResetPasswordToken() {
+		return resetPasswordToken;
+	}
+
+
+
+	public void setResetPasswordToken(String resetPasswordToken) {
+		this.resetPasswordToken = resetPasswordToken;
+	}
+
+
 
 	public List<UserRole> getUserRole() {
 		return userRole;
 	}
 
+
+
 	public void setUserRole(List<UserRole> userRole) {
 		this.userRole = userRole;
 	}
+
+
 
 	public Customer getCustomer() {
 		return customer;
 	}
 
+
+
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+
 
 	@Override
 	public int hashCode() {

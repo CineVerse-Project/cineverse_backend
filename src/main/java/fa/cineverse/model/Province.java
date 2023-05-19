@@ -36,14 +36,17 @@ public class Province {
 	}
 
 	public Province(String provinceId, String provinceName, boolean isDelete, LocalDateTime createdAt,
-			LocalDateTime updatedAt) {
+			LocalDateTime updatedAt, List<Theater> theaters) {
 		super();
 		this.provinceId = provinceId;
 		this.provinceName = provinceName;
 		this.isDelete = isDelete;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.theaters = theaters;
 	}
+
+
 
 	public String getProvinceId() {
 		return provinceId;
@@ -90,6 +93,18 @@ public class Province {
 	}
 
 	public void setTheater(List<Theater> theaters) {
+		this.theaters = theaters;
+	}
+
+
+
+	public List<Theater> getTheaters() {
+		return theaters;
+	}
+
+
+
+	public void setTheaters(List<Theater> theaters) {
 		this.theaters = theaters;
 	}
 	

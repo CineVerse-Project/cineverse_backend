@@ -6,6 +6,7 @@ package fa.cineverse.config;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,6 +32,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import fa.cineverse.common.JwtRequestFilter;
 
@@ -45,12 +51,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO Auto-generated method stub
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
-	
+//	@Override
+//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		// TODO Auto-generated method stub
+//		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//	}
+//	
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -70,7 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		//CORS DE CAC HOST KHAC TRUY CAP DUOC
 		//CSRF DUNG DE SU DUNG POST REQUEST TRANH BI TAN CONG
 		http.cors().and().csrf().disable();
-		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		
 		http.authorizeHttpRequests(
 				(auth)->
 				{
@@ -114,6 +120,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 							e.printStackTrace();
 						}
 				});
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 		
 	}
 	
@@ -121,5 +128,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+		
+	@Bean(name="emailConfigBean")
+	@Primary
+    public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration(ResourceLoader resourceLoader) {
+        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
+        bean.setTemplateLoaderPath("classpath:/templates/");
+        return bean;
+    }
+//	@Bean
+//	public JavaMailSender getJavaMailSender() {
+//	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//	    mailSender.setHost("smtp.gmail.com");
+//	    mailSender.setPort(587);
+//	    
+//	    mailSender.setUsername("cineverse.service@gmail.com");
+//	    mailSender.setPassword("java2301s");
+//	    
+//	    Properties props = mailSender.getJavaMailProperties();
+//	    props.put("mail.transport.protocol", "smtp");
+//	    props.put("mail.smtp.auth", "true");
+//	    props.put("mail.smtp.starttls.enable", "true");
+//	    props.put("mail.debug", "true");
+//	    
+//	    return mailSender;
+//	}
 	
 }
