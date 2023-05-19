@@ -22,6 +22,8 @@ public class Ticket {
             strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String ticketId;
 	
+	private boolean booked;
+	
 	private boolean isDelete;
 	
 	private LocalDateTime createdAt;
@@ -47,10 +49,11 @@ public class Ticket {
 		super();
 	}
 
-	public Ticket(String ticketId, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt,
+	public Ticket(String ticketId, boolean booked, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt,
 			Schedule schedule, Seat seat, Booking booking) {
 		super();
 		this.ticketId = ticketId;
+		this.booked = booked;
 		this.isDelete = isDelete;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -115,6 +118,12 @@ public class Ticket {
 	public void setBooking(Booking booking) {
 		this.booking = booking;
 	}
-	
-	
+
+	public boolean isBooked() {
+		return booked;
+	}
+
+	public void setBooked(boolean booked) {
+		this.booked = booked;
+	}
 }
