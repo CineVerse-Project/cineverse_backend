@@ -16,12 +16,12 @@ import fa.cineverse.model.User;
  */
 public interface UserService {
 
-	List<User> findUserByUsername(String username);
-
 	void saveUser(User user);
 
 	User findByUsername(String username);
 
 	void createResetPassword(User user);
+	
+	void updateUser(User user);
 
 }

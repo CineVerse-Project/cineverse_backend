@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -54,59 +56,34 @@ public class CustomerController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@PostMapping("/customer/register")
-	public ResponseEntity<?> signUp(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult){
-		new UserDTO().validate(userDTO, bindingResult);
-		Map<String,String> errorMap = new HashMap<>();
-		if(bindingResult.hasErrors()) {
-			List<FieldError> errors = bindingResult.getFieldErrors();
-			errors.forEach(x->errorMap.put(x.getField(), x.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(errorMap);
-
-		}
-		//Kiểm tra dữ liệu email đã tồn tại trong database chưa.
-		List<User> users = userService.findUserByUsername(userDTO.getUsername());
-		if(users.isEmpty()) {
-			User user = new User();
-			BeanUtils.copyProperties(userDTO, user);
-			userService.saveUser(user);
-			Customer customer = new Customer(userDTO.getFullName(),userDTO.getUsername(),userDTO.getAddress(),userDTO.getPhoneNumber(),userDTO.getBirthday(),userDTO.isGender());
-			customer.setUser(user);
-			customerService.saveCustomer(customer);
-			return ResponseEntity.ok("Đăng ký thành công!");
-		}
-
-		return ResponseEntity.badRequest().body("Email đã được đăng ký!");
-	}
 	
-	
-	@GetMapping("/customer/{username}")
-	public ResponseEntity<?> information(@PathVariable("username") String username){
-		//Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng token gửi về
-		Customer customer = customerService.findByUsername(username);
-		if(customer!=null) {
-			return ResponseEntity.ok(customer);
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 19 May 2023 | @Time: 14:16:58
+	 * @Return: ResponseEntity<?>
+	 */
+	@RequestMapping(value = "/user/history-order", method = RequestMethod.GET)
+	public ResponseEntity<?> historyOrder(@RequestParam("username")String username) {
+		User user = userService.findByUsername(username);
+		if(user!=null) {
+			Customer customer = customerService.findByUser(user);
+			List<Object[]> historyOrder = customerService.allHistoryOrderByCustomer(customer);
+			return ResponseEntity.ok().body(historyOrder);
 		}
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.badRequest().build();
 		
 	}
 	
-	@PatchMapping("/customer/customer-update")
-	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult,HttpServletRequest request){
-		Map<String, String> errorMap = new HashMap<>();
-		if(bindingResult.hasErrors()) {
-			List<FieldError> errors = bindingResult.getFieldErrors();
-			errors.forEach(x->errorMap.put(x.getField(), x.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(errorMap);
+	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
+	public ResponseEntity<?> earnPoints(@RequestParam("username")String username) {
+		User user = userService.findByUsername(username);
+		if(user!=null) {
+			Customer customer = customerService.findByUser(user);
+			List<Object[]> earnPoints = customerService.listEarnPoints(customer);
+			
+			return ResponseEntity.ok().body(earnPoints);
 		}
-		Customer customer = customerService.findByUsername(userDTO.getUsername());
-		boolean checkMatchs = passwordEncoder.matches(userDTO.getPassword(),customer.getUser().getPassword());
-		if(checkMatchs){
-			BeanUtils.copyProperties(userDTO, customer);
-			customerService.updateCustomer(customer);
-			return ResponseEntity.ok(customer);
-		}
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.badRequest().build();
+		
 	}
-
 }

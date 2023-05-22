@@ -14,64 +14,37 @@ import org.springframework.validation.Validator;
  * 
  */
 public class ResetPasswordRequest implements Validator {
-	private String usernameString;
-	private String tokenString;
-	private String newPasswordString;
-	private String confirmNewPasswordString;
+	private String newPassword;
+	private String confirmPassword;
 	
 	
 	public ResetPasswordRequest() {
 		super();
 	}
 
-
-	public ResetPasswordRequest(String usernameString, String tokenString, String newPasswordString,
-			String confirmNewPasswordString) {
+	public ResetPasswordRequest(String newPassword, String confirmNewPassword) {
 		super();
-		this.usernameString = usernameString;
-		this.tokenString = tokenString;
-		this.newPasswordString = newPasswordString;
-		this.confirmNewPasswordString = confirmNewPasswordString;
+		this.newPassword = newPassword;
+		this.confirmPassword = confirmNewPassword;
+	}
+
+	public String getNewPassword() {
+		return newPassword;
 	}
 
 
-	public String getUsernameString() {
-		return usernameString;
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 
 
-	public void setUsernameString(String usernameString) {
-		this.usernameString = usernameString;
+	public String getConfirmNewPassword() {
+		return confirmPassword;
 	}
 
 
-	public String getTokenString() {
-		return tokenString;
-	}
-
-
-	public void setTokenString(String tokenString) {
-		this.tokenString = tokenString;
-	}
-
-
-	public String getNewPasswordString() {
-		return newPasswordString;
-	}
-
-
-	public void setNewPasswordString(String newPasswordString) {
-		this.newPasswordString = newPasswordString;
-	}
-
-
-	public String getConfirmNewPasswordString() {
-		return confirmNewPasswordString;
-	}
-
-
-	public void setConfirmNewPasswordString(String confirmNewPasswordString) {
-		this.confirmNewPasswordString = confirmNewPasswordString;
+	public void setConfirmNewPassword(String confirmNewPassword) {
+		this.confirmPassword = confirmNewPassword;
 	}
 
 
@@ -86,8 +59,8 @@ public class ResetPasswordRequest implements Validator {
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		ResetPasswordRequest passwordRequest = (ResetPasswordRequest) target;
-		if(!passwordRequest.getNewPasswordString().equals(passwordRequest.getConfirmNewPasswordString())) {
-			errors.rejectValue("confirmNewPasswordString", "Xác nhận mật khẩu không chính xác!");
+		if(!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmNewPassword())) {
+			errors.rejectValue("confirmNewPasswordString", "Xác nhận mật khẩu không chính xác!","Xác nhận mật khẩu không chính xác!");
 		}
 	}
 	

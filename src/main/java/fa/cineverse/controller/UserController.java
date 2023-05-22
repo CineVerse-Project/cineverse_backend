@@ -9,12 +9,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,11 +45,15 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import fa.cineverse.common.JwtCommon;
 import fa.cineverse.dto.ChangePasswordRequest;
 import fa.cineverse.dto.CustomUserDetails;
+import fa.cineverse.dto.ForgotPasswordRequest;
 import fa.cineverse.dto.JwtResponse;
 import fa.cineverse.dto.LoginAdminRequest;
 import fa.cineverse.dto.LoginRequest;
 import fa.cineverse.dto.ResetPasswordRequest;
+import fa.cineverse.dto.UserDTO;
+import fa.cineverse.model.Customer;
 import fa.cineverse.model.User;
+import fa.cineverse.service.CustomerService;
 import fa.cineverse.service.EmailService;
 import fa.cineverse.service.UserService;
 import freemarker.template.TemplateException;
@@ -58,7 +68,7 @@ import net.bytebuddy.utility.RandomString;
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin("*")
-public class AuthenrizationController {
+public class UserController {
 	
 	@Autowired
 	private JwtCommon jwtCommon;
@@ -71,6 +81,12 @@ public class AuthenrizationController {
 
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	/**
 	 * @Author: HuuNQ
@@ -89,7 +105,6 @@ public class AuthenrizationController {
 		}
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-		System.out.println(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
 		CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
@@ -115,7 +130,6 @@ public class AuthenrizationController {
 		}
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				loginAdminRequest.getUsername(), loginAdminRequest.getPassword()));
-		System.out.println(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
 		CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
@@ -124,6 +138,11 @@ public class AuthenrizationController {
 		return ResponseEntity.ok(new JwtResponse(jwtGenerate, loginAdminRequest.getUsername(), userRoles));
 	}
 
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 22 May 2023 | @Time: 08:42:06
+	 * @Return: ResponseEntity<?>
+	 */
 	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
 	public ResponseEntity<?> user(HttpServletRequest request,@Valid @RequestBody ChangePasswordRequest changePassword, BindingResult bindingResult) {
 		new ChangePasswordRequest().validate(changePassword, bindingResult);
@@ -148,47 +167,44 @@ public class AuthenrizationController {
 				boolean checkPassword = passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword());
 				if(checkPassword) {
 					user.setPassword(changePassword.getNewPassword());
-					userService.saveUser(user);
+					userService.updateUser(user);
+					return ResponseEntity.ok().body("Thao tác thành công");
 				}else {
 					errorMap.put("oldPassword", "Sai mật khẩu!");
+					return ResponseEntity.badRequest().body(errorMap);
 				}
+			}else {
+				return ResponseEntity.notFound().build();
 			}
-			return ResponseEntity.ok(user);
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
 	}
-
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
-	 */
-	@RequestMapping(value = "/admin/admin", method = RequestMethod.GET)
-	public ResponseEntity<?> admin() {
-		return ResponseEntity.ok("OK");
-	}
-
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:55
 	 * @Return: ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
-	public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
-		if ("".equals(email) || email == null) {
-			return ResponseEntity.badRequest().body("Khong bo trong");
+	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
+	public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest,BindingResult bindingResult) {
+		new  ForgotPasswordRequest().validate(forgotPasswordRequest, bindingResult);
+		Map<String,String> errorMap = new HashMap<>();
+		
+		if(bindingResult.hasErrors()) {
+			bindingResult.getAllErrors().forEach(x->{
+				errorMap.put(x.getCode(), x.getDefaultMessage());
+			});
+			return ResponseEntity.badRequest().body(errorMap);
 		}
-		String usernameString = email.toString();
-		User user = userService.findByUsername(usernameString);
+		
+		User user = userService.findByUsername(forgotPasswordRequest.getUsername());
+		
 		if (user != null) {
-			
-
 				String resetPassword = RandomString.make(20);
 				user.setResetPasswordToken(resetPassword);
 				userService.createResetPassword(user);
 				try {
-					emailService.sendEmail(usernameString,
-							"http://localhost:3000/reset-password?reset-password-token=" +resetPassword+ "&username="+usernameString
+					emailService.sendEmail(forgotPasswordRequest.getUsername(),
+							"http://localhost:3000/reset-password?reset-password-token=" +resetPassword+ "&username="+forgotPasswordRequest.getUsername()
 					);
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
@@ -203,7 +219,6 @@ public class AuthenrizationController {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 		}
 		return ResponseEntity.ok("OK");
 	}
@@ -214,7 +229,21 @@ public class AuthenrizationController {
 	 * @Return: ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/reset-password", method = RequestMethod.POST)
-	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPassword,BindingResult result) {
+	public ResponseEntity<?> resetPassword(@RequestParam("username") Optional<String> username,@RequestParam("reset-password-token") Optional<String> token,@Valid @RequestBody ResetPasswordRequest resetPassword,BindingResult result) {
+		if(!username.isPresent() || !token.isPresent()) {
+			return ResponseEntity.badRequest().body("Yêu cầu chưa hợp lệ!");
+		}
+		
+		String usernamePresent = null;
+		if(username.isPresent()) {
+			usernamePresent = username.get();
+		}
+		String tokenPresent = null;
+		if(token.isPresent()) {
+			tokenPresent = token.get();
+		}
+
+		
 		new ResetPasswordRequest().validate(resetPassword, result);
 		Map<String, String> errorMap = new HashMap<>();
 		if(result.hasErrors()) {
@@ -224,15 +253,102 @@ public class AuthenrizationController {
 			
 			return ResponseEntity.badRequest().body(errorMap);
 		}
-		User user = userService.findByUsername(resetPassword.getUsernameString());
-		if(user!= null && user.getResetPasswordToken().equals(resetPassword.getTokenString())) {
-			String encodePassword = resetPassword.getNewPasswordString();
-			user.setPassword(encodePassword);
+
+		User user = userService.findByUsername(usernamePresent);
+		if(user!= null && tokenPresent.equals(user.getResetPasswordToken())) {
+			user.setPassword(resetPassword.getNewPassword());
 			user.setResetPasswordToken(null);
-			userService.saveUser(user);
+			userService.updateUser(user);
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.badRequest().build();
+	}
+	
+	/**
+	 * 
+	 * @Author: HuuNQ
+	 * @Day: 22 May 2023 | @Time: 08:54:08
+	 * @Return: ResponseEntity<?>
+	 */
+	
+	@PostMapping("/user/register")
+	public ResponseEntity<?> signUp(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult){
+		new UserDTO().validate(userDTO, bindingResult);
+		Map<String,String> errorMap = new HashMap<>();
+		if(bindingResult.hasErrors()) {
+			List<FieldError> errors = bindingResult.getFieldErrors();
+			errors.forEach(x->errorMap.put(x.getField(), x.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(errorMap);
+		}
+		//Kiểm tra dữ liệu email đã tồn tại trong database chưa.
+		User users = userService.findByUsername(userDTO.getUsername());
+		if(users!=null) {
+			User user = new User();
+			BeanUtils.copyProperties(userDTO, user);
+			userService.saveUser(user);
+			Customer customer = new Customer(userDTO.getFullName(),userDTO.getUsername(),userDTO.getAddress(),userDTO.getPhoneNumber(),userDTO.getBirthday(),userDTO.isGender());
+			customer.setUser(user);
+			customerService.saveCustomer(customer);
+			return ResponseEntity.ok("Đăng ký thành công!");
+		}
+
+		return ResponseEntity.badRequest().body("Email đã được đăng ký!");
+	}
+	
+	
+	@GetMapping("/user/{username}")
+	public ResponseEntity<?> information(@PathVariable("username") String username,HttpServletRequest request){
+		//Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng token gửi về
+		String tokenString = request.getHeader("Authorization");
+		String token = null;
+		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+			token = tokenString.substring(7,tokenString.length());
+        }
+		String usernameToken = jwtCommon.getUsernameFromToken(token);
+		if(username.equals(usernameToken)) {
+			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+		}
+		User user = userService.findByUsername(username);
+		if(user!=null) {
+			Customer customer = customerService.findByUser(user);
+			if(customer!=null) {
+				return ResponseEntity.ok().body(customer);
+			}
+			
+		}
+		return ResponseEntity.notFound().build();
+		
+	}
+	
+	@PatchMapping("/user/user-update")
+	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult,HttpServletRequest request){
+		Map<String, String> errorMap = new HashMap<>();
+		if(bindingResult.hasErrors()) {
+			List<FieldError> errors = bindingResult.getFieldErrors();
+			errors.forEach(x->errorMap.put(x.getField(), x.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(errorMap);
+		}
+		String tokenString = request.getHeader("Authorization");
+		String token = null;
+		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+			token = tokenString.substring(7,tokenString.length());
+        }
+		String usernameToken = jwtCommon.getUsernameFromToken(token);
+		if(userDTO.getUsername().equals(usernameToken)) {
+			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+		}
+		User user = userService.findByUsername(userDTO.getUsername());
+		if(user!=null) {
+			Customer customer = customerService.findByUser(user);
+			boolean checkMatchs = passwordEncoder.matches(userDTO.getPassword(),customer.getUser().getPassword());
+			if(checkMatchs){
+				BeanUtils.copyProperties(userDTO, customer);
+				customerService.updateCustomer(customer);
+				return ResponseEntity.ok("Cập nhật thành công");
+			}
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 	
 }

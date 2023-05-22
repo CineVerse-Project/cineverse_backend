@@ -30,11 +30,6 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepository userRepository;
 
-	@Override
-	public List<User> findUserByUsername(String username) {
-		// TODO Auto-generated method stub
-		return userRepository.findAllUserByUsername(username);
-	}
 
 	@Override
 	public void saveUser(User user) {
@@ -47,12 +42,24 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User findByUsername(String username) {
 		// TODO Auto-generated method stub
-		return userRepository.findByUsername(username);
+		User user = userRepository.findByUsername(username);
+		if(user != null) {
+			return user;
+		}
+		return null;
 	}
 
 	@Override
 	public void createResetPassword(User user) {
 		// TODO Auto-generated method stub
+		userRepository.save(user);
+	}
+
+	@Override
+	public void updateUser(User user) {
+		// TODO Auto-generated method stub
+		String passwordEncoded = passwordEncoder.encode(user.getPassword());
+		user.setPassword(passwordEncoded);
 		userRepository.save(user);
 	}
 
