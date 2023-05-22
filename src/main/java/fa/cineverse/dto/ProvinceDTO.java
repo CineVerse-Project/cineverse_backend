@@ -1,49 +1,26 @@
-package fa.cineverse.model;
+package fa.cineverse.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.UniqueElements;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fa.cineverse.model.Theater;
 
-@Entity
-@JsonIgnoreProperties({"theaters"})
-public class Province {
-	@Id
-	@Column(columnDefinition = "VARCHAR(20)")
-    @GeneratedValue(generator = "prod-generator")
-    @GenericGenerator(name = "prod-generator",
-            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "PV"),
-            strategy = "fa.cineverse.common.IdentityCodeGenerator")
+public class ProvinceDTO {
 	private String provinceId;
+	@NotNull
+	@Column(unique = true)
 	private String provinceName;
 	private boolean isDelete;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	
-	@OneToMany(mappedBy = "province")
 	private List<Theater> theaters;
-	
-	public Province() {
-		super();
-	}
-
-	public Province(String provinceId, String provinceName, boolean isDelete, LocalDateTime createdAt,
-			LocalDateTime updatedAt) {
-		super();
-		this.provinceId = provinceId;
-		this.provinceName = provinceName;
-		this.isDelete = isDelete;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
 
 	public String getProvinceId() {
 		return provinceId;
@@ -92,6 +69,20 @@ public class Province {
 	public void setTheaters(List<Theater> theaters) {
 		this.theaters = theaters;
 	}
-	
-	
+
+	public ProvinceDTO(String provinceId, String provinceName, boolean isDelete, LocalDateTime createdAt,
+			LocalDateTime updatedAt, List<Theater> theaters) {
+		super();
+		this.provinceId = provinceId;
+		this.provinceName = provinceName;
+		this.isDelete = isDelete;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.theaters = theaters;
+	}
+
+	public ProvinceDTO() {
+		super();
+	}
+
 }

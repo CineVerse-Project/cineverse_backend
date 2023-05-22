@@ -89,13 +89,13 @@ public class ScheduleController {
             errors.put("scheduleId", errorMessage);
         }
 
-        Room room = roomService.findById(scheduleDTO.getScheduleId().getRoomId());
+        Room room = roomService.get(scheduleDTO.getScheduleId().getRoomId());
         if (room == null) {
             String errorMessage = "Room ID is not exist";
             errors.put("roomId", errorMessage);
         }
 
-        Movie movie = movieService.findById(scheduleDTO.getMovie().getMovieId());
+        Movie movie = movieService.get(scheduleDTO.getMovie().getMovieId());
         if (movie == null) {
             String errorMessage = "Movie ID is not exist";
             errors.put("movieId", errorMessage);
@@ -131,13 +131,13 @@ public class ScheduleController {
             errors.put("scheduleId", errorMessage);
         }
 
-        Room room = roomService.findById(scheduleDTO.getScheduleId().getRoomId());
+        Room room = roomService.get(scheduleDTO.getScheduleId().getRoomId());
         if (room == null) {
             String errorMessage = "Room ID is not exist";
             errors.put("roomId", errorMessage);
         }
 
-        Movie movie = movieService.findById(scheduleDTO.getMovie().getMovieId());
+        Movie movie = movieService.get(scheduleDTO.getMovie().getMovieId());
         if (movie == null) {
             String errorMessage = "Movie ID is not exist";
             errors.put("movieId", errorMessage);

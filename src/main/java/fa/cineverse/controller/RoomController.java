@@ -22,51 +22,57 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.BindingResult;
 
-import fa.cineverse.dto.ProvinceDTO;
-import fa.cineverse.model.Province;
-import fa.cineverse.service.ProvinceService;
+import fa.cineverse.dto.RoomDTO;
+
+import fa.cineverse.model.Room;
+
+import fa.cineverse.service.RoomService;
 import net.bytebuddy.asm.Advice.Return;
 
 @RestController
-@RequestMapping("/province")
-public class ProvinceController {
+@RequestMapping("/room")
+public class RoomController {
 	@Autowired
-	private ProvinceService provinceService;
+	private RoomService roomService;
 
 	/**
 	 * @Author: DatNH20
 	 * @Day: May 19, 2023 | @Time: 2:16:01 PM
 	 * @Return: ResponseEntity<?>
-	 * @Note: list all province and check if that list empty
+	 * @Note: list all room and check if that list empty
 	 */
 	@GetMapping("")
 	public ResponseEntity<?> findAll() {
-		List<Province> provinceList = provinceService.listAll();
-		if (provinceList.isEmpty()) {
+		List<Room> roomList = roomService.listAll();
+		if (roomList.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<>(provinceList, HttpStatus.OK);
+		return new ResponseEntity<>(roomList, HttpStatus.OK);
 	}
 
 	/**
 	 * @Author: DatNH20
 	 * @Day: May 19, 2023 | @Time: 2:14:54 PM
 	 * @Return: ResponseEntity<?>
-	 * @Note: create a province and check validate input
+	 * @Note: create a room and check validate input
 	 */
 	@PostMapping("")
-	public ResponseEntity<?> createProvince(@Validated @RequestBody ProvinceDTO provinceDTO,
-			BindingResult bindingResult) {
-		Province provinceVal = provinceService.findByProvinceName(provinceDTO.getProvinceName());
+	public ResponseEntity<?> createRoom(@Validated @RequestBody RoomDTO roomDTO, BindingResult bindingResult) {
+		List<Room> roomOfTheateRooms = roomService.findByTheater(roomDTO.getTheater());
 		if (bindingResult.hasFieldErrors()) {
 			return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
 		}
-		if (provinceVal != null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		for (Room room : roomOfTheateRooms) {
+			if (roomDTO.getRoomName().equals(room.getRoomName())) {
+				System.out.println("2");
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
 		}
-		Province province = new Province();
-		BeanUtils.copyProperties(provinceDTO, province);
-		provinceService.createProvince(province);
+		System.out.println(roomDTO.getTheater().getTheaterId());
+		Room room = new Room();
+		BeanUtils.copyProperties(roomDTO, room);
+		roomService.createRoom(room);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
@@ -78,48 +84,59 @@ public class ProvinceController {
 	 *        to 1)
 	 */
 	@DeleteMapping("{id}")
-	public ResponseEntity<Province> deleteProvince(@PathVariable("id") String id) {
-		Province province = this.provinceService.get(id);
-		if (province == null) {
+	public ResponseEntity<Room> deleteRoom(@PathVariable("id") String id) {
+		Room room = this.roomService.get(id);
+		if (room == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		try {
 			if ("".equals(id) || "null".equals(id)) {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
-			this.provinceService.delete(id);
+			this.roomService.delete(id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	
 	/**
-	 * @Author: DatNH20 
+	 * @Author: DatNH20
 	 * @Day: May 19, 2023 | @Time: 4:17:55 PM
 	 * @Return: ResponseEntity<?>
-	 * @Note: update province moi
+	 * @Note: update room moi
 	 */
-	@PatchMapping(value = "/{provinceId}")
-	public ResponseEntity<?> updateProvince(@PathVariable String provinceId,
-			@Validated @RequestBody ProvinceDTO provinceDTO, BindingResult bindingResult) {
-		Province provinceVal = provinceService.findByProvinceName(provinceDTO.getProvinceName());
-		
+	@PatchMapping(value = "/{roomId}")
+	public ResponseEntity<?> updateRoom(@PathVariable String roomId, @Validated @RequestBody RoomDTO roomDTO,
+			BindingResult bindingResult) {
+		List<Room> roomOfTheateRooms = roomService.findByTheater(roomDTO.getTheater());
 		if (bindingResult.hasFieldErrors()) {
 			return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
 		}
-		Province provinceOptional = provinceService.get(provinceId);
-		if (provinceOptional==null) {
+		Room roomOptional = roomService.get(roomId);
+		if (roomOptional == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		if (provinceVal != null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		Room roomUpdate = null;
+		System.out.println(roomOptional.getTheater().getTheaterId().equals(roomDTO.getTheater().getTheaterId()));
+		if (roomOptional.getRoomName().equals(roomDTO.getRoomName())
+				&& roomOptional.getTheater().getTheaterId().equals(roomDTO.getTheater().getTheaterId())) {
+			roomOptional.setRoomId(roomId);
+			BeanUtils.copyProperties(roomDTO, roomOptional);
+			roomUpdate = this.roomService.updateRoom(roomOptional);
+			System.out.println("2");
+			return new ResponseEntity<>(roomUpdate, HttpStatus.OK);
+		} else {
+			for (Room room : roomOfTheateRooms) {
+				if (roomDTO.getRoomName().equals(room.getRoomName())) {
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+			}
 		}
-		provinceOptional.setProvinceId(provinceId);
-		provinceOptional.setProvinceName(provinceDTO.getProvinceName());
-		Province provinceUpdate = this.provinceService.updateProvince(provinceOptional);
-		return new ResponseEntity<>(provinceUpdate,HttpStatus.OK);
+		roomOptional.setRoomId(roomId);
+		BeanUtils.copyProperties(roomDTO, roomOptional);
+		roomUpdate = this.roomService.updateRoom(roomOptional);
+		return new ResponseEntity<>(roomUpdate, HttpStatus.OK);
 	}
 
 }
