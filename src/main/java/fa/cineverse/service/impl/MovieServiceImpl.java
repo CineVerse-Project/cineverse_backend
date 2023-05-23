@@ -18,34 +18,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class MovieServiceImpl implements MovieService {
 
-
     @Autowired
     private MovieRepository movieRepository;
 
-
-//	@Override
-//	public List<Movie> findAllMovieIsShowing() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<Movie> findAllMoviePremiereSoon() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<Movie> findAllMoviePremiered() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-    /**
-	 * @Author: DatNH20 
-	 * @Day: May 23, 2023 | @Time: 10:25:04 AM
-	 * @Return: find by id
-	 */
     @Override
     public Movie findById(String movieId) {
         return movieRepository.findById(movieId).orElse(null);
