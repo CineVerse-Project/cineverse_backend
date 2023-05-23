@@ -46,6 +46,8 @@ public class Province {
 		this.theaters = theaters;
 	}
 
+
+
 	public String getProvinceId() {
 		return provinceId;
 	}
@@ -93,7 +95,5 @@ public class Province {
 	public void setTheaters(List<Theater> theaters) {
 		this.theaters = theaters;
 	}
-
-	
 	
 }

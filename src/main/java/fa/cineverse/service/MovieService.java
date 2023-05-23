@@ -6,38 +6,6 @@ import java.util.List;
 public interface MovieService {
     Movie findById(String movieId);
 
-//	/**
-//	 * @Author: TriLT6 | @User: TRUNG TRI
-//	 * @Day: May 18, 2023 | @Time: 3:51:50 PM
-//	 * @Package: fa.cineverse.service
-//	 * @FileName: MovieService.java
-//	 * @MethodsName: findAllMovieIsShowing
-//	 * @Return: List<Movie>
-//	 * @Note:
-//	 */
-//	List<Movie> findAllMovieIsShowing();
-//
-//	/**
-//	 * @Author: TriLT6 | @User: TRUNG TRI
-//	 * @Day: May 18, 2023 | @Time: 3:51:53 PM
-//	 * @Package: fa.cineverse.service
-//	 * @FileName: MovieService.java
-//	 * @MethodsName: findAllMoviePremiereSoon
-//	 * @Return: List<Movie>
-//	 * @Note:
-//	 */
-//	List<Movie> findAllMoviePremiereSoon();
-//
-//	/**
-//	 * @Author: TriLT6 | @User: TRUNG TRI
-//	 * @Day: May 18, 2023 | @Time: 3:51:56 PM
-//	 * @Package: fa.cineverse.service
-//	 * @FileName: MovieService.java
-//	 * @MethodsName: findAllMoviePremiered
-//	 * @Return: List<Movie>
-//	 * @Note:
-//	 */
-//	List<Movie> findAllMoviePremiered();
     
     /**
 	 * @Author: DatNH20 
@@ -95,4 +63,5 @@ public interface MovieService {
 	 * @Note: find movie by name
 	 */
 	public Movie findByMovieName(String movieName);
+
 }
