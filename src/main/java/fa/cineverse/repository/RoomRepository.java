@@ -2,7 +2,6 @@ package fa.cineverse.repository;
 
 import fa.cineverse.model.Room;
 import fa.cineverse.model.Theater;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;

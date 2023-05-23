@@ -23,4 +23,5 @@ public interface SeatRepository extends JpaRepository<Seat, String> {
 	@Modifying
 	@Query(value = "UPDATE seat SET is_delete = 1 WHERE seat_room_id= :id", nativeQuery = true)
 	void deleteSeat(@Param("id") String id);
+
 }
