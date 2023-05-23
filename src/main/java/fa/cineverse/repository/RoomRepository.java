@@ -1,14 +1,17 @@
 package fa.cineverse.repository;
 
+import fa.cineverse.model.Room;
+import fa.cineverse.model.Theater;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import fa.cineverse.model.Province;
-
-public interface ProvinceRepository extends JpaRepository<Province, String> {
+public interface RoomRepository extends JpaRepository<Room, String> {
 
 	/**
 	 * @Author: DatNH20
@@ -18,14 +21,22 @@ public interface ProvinceRepository extends JpaRepository<Province, String> {
 	 */
 	@Transactional
 	@Modifying
-	@Query(value = "UPDATE province SET is_delete = 1 WHERE province_id= :id", nativeQuery = true)
-	void deleteProvince(@Param("id") String id);
+	@Query(value = "UPDATE room SET is_delete = 1 WHERE room_id= :id", nativeQuery = true)
+	void deleteRoom(@Param("id") String id);
 
 	/**
-	 * @Author: DatNH20 
+	 * @Author: DatNH20
 	 * @Day: May 22, 2023 | @Time: 2:16:47 AM
 	 * @Return: Province
-	 * @Note: find province by name
+	 * @Note: find room by name
 	 */
-	Province findByProvinceName(String provinceName);
+	Room findByRoomName(String RoomName);
+	
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 22, 2023 | @Time: 9:52:39 AM
+	 * @Return: Room
+	 * @Note: find room by theater
+	 */
+	List<Room> findByTheater(Theater theater);
 }

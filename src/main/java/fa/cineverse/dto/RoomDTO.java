@@ -1,81 +1,37 @@
-/**
- * Created At {11 May 2023
- * By HuuNQ
- */
-package fa.cineverse.model;
+package fa.cineverse.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.GenericGenerator;
+import fa.cineverse.model.Schedule;
+import fa.cineverse.model.Seat;
+import fa.cineverse.model.Theater;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+public class RoomDTO {
 
-/**
- * @author HuuNQ
- *
- * 11 May 2023
- * 
- */
-@Entity
-@JsonIgnoreProperties({"seats","schedules"})
-public class Room {
-	@Id
-	@Column(columnDefinition = "VARCHAR(20)")
-    @GeneratedValue(generator = "prod-generator")
-    @GenericGenerator(name = "prod-generator",
-            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "RO"),
-            strategy = "fa.cineverse.common.IdentityCodeGenerator")  
 	private String roomId;
-	
-	private int seatTotal;
-	
-	private String roomName;
-	
-	private int seatRowNumber;
-	
-	private int seatColumnNumber;
-	
-	private boolean isDelete;
-	
-	private LocalDateTime createdAt;
-	
-	private LocalDateTime updatedAt;
-	
-	@ManyToOne
-	@JoinColumn(name="theater_id")
-	private Theater theater;
-	
-	@OneToMany(mappedBy = "room")
-	private List<Seat> seats;
-	
-	@OneToMany(mappedBy = "room")
-	private List<Schedule> schedules;
-	
-	public Room() {
-		super();
-	}
 
-	public Room(String roomId, int seatTotal, String roomName, int seatRowNumber, int seatColumnNumber,
-			boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt) {
-		super();
-		this.roomId = roomId;
-		this.seatTotal = seatTotal;
-		this.roomName = roomName;
-		this.seatRowNumber = seatRowNumber;
-		this.seatColumnNumber = seatColumnNumber;
-		this.isDelete = isDelete;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
+	private int seatTotal;
+
+	private String roomName;
+
+	private int seatRowNumber;
+
+	private int seatColumnNumber;
+
+	private boolean isDelete;
+
+	private LocalDateTime createdAt;
+
+	private LocalDateTime updatedAt;
+
+
+	private Theater theater;
+
+	private List<Seat> seats;
+
+	private List<Schedule> schedules;
 
 	public String getRoomId() {
 		return roomId;
@@ -164,4 +120,27 @@ public class Room {
 	public void setSchedules(List<Schedule> schedules) {
 		this.schedules = schedules;
 	}
+
+	public RoomDTO(String roomId, int seatTotal, String roomName, int seatRowNumber, int seatColumnNumber,
+			boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt, Theater theater, List<Seat> seats,
+			List<Schedule> schedules) {
+		super();
+		this.roomId = roomId;
+		this.seatTotal = seatTotal;
+		this.roomName = roomName;
+		this.seatRowNumber = seatRowNumber;
+		this.seatColumnNumber = seatColumnNumber;
+		this.isDelete = isDelete;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.theater = theater;
+		this.seats = seats;
+		this.schedules = schedules;
+	}
+
+	public RoomDTO() {
+		super();
+	}
+	
+	
 }
