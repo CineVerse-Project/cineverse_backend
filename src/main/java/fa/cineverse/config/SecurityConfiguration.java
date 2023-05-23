@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpMethod;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,12 +52,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
-//	@Override
-//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		// TODO Auto-generated method stub
-//		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//	}
-//	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		// TODO Auto-generated method stub
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+	
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -73,8 +74,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
-		//CORS DE CAC HOST KHAC TRUY CAP DUOC
-		//CSRF DUNG DE SU DUNG POST REQUEST TRANH BI TAN CONG
+		//CORS để các host đều được truy cập
+		//CSRF được dùng để tránh các trường hợp bị tấn công csrf
 		http.cors().and().csrf().disable();
 		
 		http.authorizeHttpRequests(
@@ -82,28 +83,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				{
 						try {
 							auth
-							//REQUEST DANH CHO TAT CA
-//							.antMatchers(HttpMethod.GET,"/api/v1/user/account").permitAll()
+							//Request không bị yêu cầu xác thực danh tính
 //							.antMatchers(
 //									HttpMethod.POST,
 //									"/api/v1/admin/login"
-//									,"/api/v1/user/login"
-//									,"/api/v1/customer/sign-up")
+//									,"/api/v1/login"
+//									,"/api/v1/sign-up")
 							.anyRequest()
 							.permitAll()
-							//REQUEST DANH CHO ADMIN HOAC USER
-//							.antMatchers(HttpMethod.GET,"/api/v1/customer/**").hasAnyRole("USER","ADMIN")
-//							.antMatchers(HttpMethod.PATCH,"/api/v1/user/**").hasAnyRole("USER","ADMIN")
-							//REQUEST PHAI LA ADMIN
+							//Request dành cho role user
+//							.antMatchers(HttpMethod.GET,"/api/v1/user/**").hasRole("USER")
+							//Request dành cho role admin hoặc user
+//							.antMatchers(HttpMethod.PATCH,"/api/v1/user/user-update").hasAnyRole("USER","ADMIN")
+							//Request dành cho role admin
 //							.antMatchers(HttpMethod.GET,"/api/v1/admin/admin").hasRole("ADMIN")
-							//TAT CA CAC REQUEST KHAC DEU PHAI DUOC CHAP NHAN
+							//Tất cả các request khác đều phải được xác thực danh tính
 //							.anyRequest().authenticated()
 							.and()
-							//KHONG TAO SESSION
+							//Không tạo sessionJID
 							.sessionManagement()
 							.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 							.and()
-							//XU LY CAC REQUEST KHONG DUOC CHAP NHAN
+							//Xử lý các request bị từ chối truy cập
 							.exceptionHandling()
 							.authenticationEntryPoint(new AuthenticationEntryPoint() {
 								@Override
@@ -112,9 +113,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 									// TODO Auto-generated method stub
 									response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Error: unauthorized");
 								}
-							})
-							.and()
-							.httpBasic();
+							});
+//							.and()
+//							.httpBasic();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -124,11 +125,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 	}
 	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:23:36
+	 * TODO
+	 * @Return: PasswordEncoder
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 		
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:21:26
+	 * @Return: FreeMarkerConfigurationFactoryBean
+	 */
 	@Bean(name="emailConfigBean")
 	@Primary
     public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration(ResourceLoader resourceLoader) {

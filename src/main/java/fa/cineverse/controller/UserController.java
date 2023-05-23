@@ -66,7 +66,6 @@ import net.bytebuddy.utility.RandomString;
  * 
  */
 @RestController
-@RequestMapping("/api/v1")
 @CrossOrigin("*")
 public class UserController {
 	
@@ -93,7 +92,7 @@ public class UserController {
 	 * @Day: 19 May 2023 | @Time: 14:17:05
 	 * @Return: ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/user/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> userLoginRequest(@Valid @RequestBody LoginRequest loginRequest,
 			BindingResult bindingResult) {
 		new LoginRequest().validate(loginRequest, bindingResult);
@@ -271,7 +270,7 @@ public class UserController {
 	 * @Return: ResponseEntity<?>
 	 */
 	
-	@PostMapping("/user/register")
+	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult){
 		new UserDTO().validate(userDTO, bindingResult);
 		Map<String,String> errorMap = new HashMap<>();
@@ -351,4 +350,42 @@ public class UserController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 19 May 2023 | @Time: 14:16:58
+	 * @Return: ResponseEntity<?>
+	 */
+	@RequestMapping(value = "/user/history-order", method = RequestMethod.GET)
+	public ResponseEntity<?> historyOrder(@RequestParam("username")String username) {
+		User user = userService.findByUsername(username);
+		
+		if(user!=null) {
+			Customer customer = customerService.findByUser(user);
+			List<Object[]> historyOrder = customerService.allHistoryOrderByCustomer(customer);
+			return ResponseEntity.ok().body(historyOrder);
+		}
+		
+		return ResponseEntity.badRequest().build();
+		
+	}
+	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:19:11
+	 * @Return: ResponseEntity<?>
+	 */
+	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
+	public ResponseEntity<?> earnPoints(@RequestParam("username")String username) {
+		
+		User user = userService.findByUsername(username);
+		
+		if(user!=null) {
+			Customer customer = customerService.findByUser(user);
+			List<Object[]> earnPoints = customerService.listEarnPoints(customer);
+			return ResponseEntity.ok().body(earnPoints);
+		}
+		
+		return ResponseEntity.badRequest().build();
+		
+	}
 }
