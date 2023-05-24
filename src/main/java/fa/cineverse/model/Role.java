@@ -27,14 +27,16 @@ public class Role {
 	
 	@OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "role")
 	private List<UserRole> userRole;
-	
+
 	public Role() {
-		
+		super();
 	}
-	
-	public Role(int roleId,String roleName) {
+
+	public Role(int roleId, String roleName, List<UserRole> userRole) {
+		super();
 		this.roleId = roleId;
 		this.roleName = roleName;
+		this.userRole = userRole;
 	}
 
 	public int getRoleId() {
@@ -51,6 +53,14 @@ public class Role {
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+
+	public List<UserRole> getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(List<UserRole> userRole) {
+		this.userRole = userRole;
 	}
 	
 	

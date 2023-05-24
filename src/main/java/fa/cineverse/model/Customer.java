@@ -51,6 +51,21 @@ public class Customer {
 		this.birthday = birthday;
 		this.gender = gender;
 	}
+	
+	
+
+	public Customer(int customerId, String fullName, String email, String address, String phoneNumber,
+			LocalDate birthday, boolean gender, User user) {
+		super();
+		this.customerId = customerId;
+		this.fullName = fullName;
+		this.email = email;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+		this.birthday = birthday;
+		this.gender = gender;
+		this.user = user;
+	}
 
 	public int getCustomerId() {
 		return customerId;
@@ -95,6 +110,14 @@ public class Customer {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }
