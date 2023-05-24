@@ -21,9 +21,11 @@ public class Ticket {
             parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "TK"),
             strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String ticketId;
-	
+
 	private boolean booked;
-	
+
+	private Double price;
+
 	private boolean isDelete;
 	
 	private LocalDateTime createdAt;
@@ -49,11 +51,10 @@ public class Ticket {
 		super();
 	}
 
-	public Ticket(String ticketId, boolean booked, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt,
-			Schedule schedule, Seat seat, Booking booking) {
-		super();
+	public Ticket(String ticketId, boolean booked, Double price, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt, Schedule schedule, Seat seat, Booking booking) {
 		this.ticketId = ticketId;
 		this.booked = booked;
+		this.price = price;
 		this.isDelete = isDelete;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -125,5 +126,13 @@ public class Ticket {
 
 	public void setBooked(boolean booked) {
 		this.booked = booked;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 }

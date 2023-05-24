@@ -7,7 +7,7 @@ import fa.cineverse.model.Payment;
 import fa.cineverse.model.Ticket;
 
 public class BookingDTO {
-private String bookingId;
+	private String bookingId;
 	
 	private int ticketTotal;
 	

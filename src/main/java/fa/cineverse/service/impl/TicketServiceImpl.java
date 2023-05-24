@@ -2,6 +2,7 @@ package fa.cineverse.service.impl;
 
 import java.util.List;
 
+import fa.cineverse.model.ScheduleId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +28,13 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public List<Ticket> saveAll(List<Ticket> tickets) {
-		// TODO Auto-generated method stub
-		return ticketRepository.saveAll(tickets);
+	public Ticket findTicketByScheduleScheduleIdAndSeat_SeatRoomId(ScheduleId scheduleId, String seatRoomId) {
+		return ticketRepository.findTicketByScheduleScheduleIdAndSeat_SeatRoomId(scheduleId, seatRoomId);
+	}
+
+	@Override
+	public Ticket findById(String id) {
+		return ticketRepository.findById(id).orElse(null);
 	}
 
 }
