@@ -1,20 +1,22 @@
 package fa.cineverse.service;
 
 import java.util.List;
-
 import fa.cineverse.model.Customer;
 import fa.cineverse.model.User;
 
 public interface CustomerService {
 
-	void saveCustomer(Customer customer);
+    Customer findCustomerByUser(String username);
 
-	void updateCustomer(Customer customer);
+    void saveCustomer(Customer customer);
 
-	List<Object[]> allHistoryOrderByCustomer(Customer customer);
+    void updateCustomer(Customer customer);
 
-	Customer findByUser(User user);
+    List<Object[]> allHistoryOrderByCustomer(Customer customer);
 
-	List<Object[]> listEarnPoints(Customer customer);
+    Customer findByUser(User user);
+
+    List<Object[]> listEarnPoints(Customer customer);
+
 
 }
