@@ -11,8 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import fa.cineverse.model.Role;
 import fa.cineverse.model.User;
+import fa.cineverse.model.UserRole;
+import fa.cineverse.repository.RoleRepository;
 import fa.cineverse.repository.UserRepository;
+import fa.cineverse.repository.UserRoleRepository;
 import fa.cineverse.service.UserService;
 
 /**
@@ -29,7 +33,12 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserRepository userRepository;
-
+	
+	@Autowired
+	private UserRoleRepository userRoleRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Override
 	public void saveUser(User user) {
@@ -37,6 +46,9 @@ public class UserServiceImpl implements UserService{
 		String passwordEncode = passwordEncoder.encode(user.getPassword());
 		user.setPassword(passwordEncode);
 		userRepository.save(user);
+		Role role = roleRepository.findByRoleName("ROLE_USER");
+		UserRole userRole = new UserRole(user,role);
+		userRoleRepository.save(userRole);
 	}
 
 	@Override

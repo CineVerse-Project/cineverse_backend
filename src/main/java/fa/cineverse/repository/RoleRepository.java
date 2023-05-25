@@ -17,4 +17,6 @@ import fa.cineverse.model.Role;
 @Transactional
 public interface RoleRepository extends JpaRepository<Role, Integer> {
 
+	Role findByRoleName(String roleName);
+
 }

@@ -6,6 +6,8 @@ package fa.cineverse.config;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -34,6 +36,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
+import org.springframework.web.cors.CorsConfiguration;
 
 import fa.cineverse.common.JwtRequestFilter;
 
@@ -76,29 +79,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		//CORS để các host đều được truy cập
 		//CSRF được dùng để tránh các trường hợp bị tấn công csrf
-		http.cors().and().csrf().disable();
-		
+		http.csrf().disable();
+		http.cors().configurationSource(request -> {
+			CorsConfiguration corsConfiguration = new CorsConfiguration();
+			corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
+			corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
+			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+			return corsConfiguration;
+		});
 		http.authorizeHttpRequests(
 				(auth)->
 				{
 						try {
 							auth
 							//Request không bị yêu cầu xác thực danh tính
-//							.antMatchers(
-//									HttpMethod.POST,
-//									"/api/v1/admin/login"
-//									,"/api/v1/login"
-//									,"/api/v1/sign-up")
-							.anyRequest()
+							.antMatchers(
+									HttpMethod.POST,
+									"/api/v1/admin/sign-in"
+									,"/api/v1/sign-in"
+									,"/api/v1/sign-up")
 							.permitAll()
 							//Request dành cho role user
-//							.antMatchers(HttpMethod.GET,"/api/v1/user/**").hasRole("USER")
+							.antMatchers(HttpMethod.GET,"/api/v1/user/**").hasRole("USER")
 							//Request dành cho role admin hoặc user
-//							.antMatchers(HttpMethod.PATCH,"/api/v1/user/user-update").hasAnyRole("USER","ADMIN")
+							.antMatchers(HttpMethod.PATCH,"/api/v1/user/user-update").hasAnyRole("USER","ADMIN")
 							//Request dành cho role admin
-//							.antMatchers(HttpMethod.GET,"/api/v1/admin/admin").hasRole("ADMIN")
+							.antMatchers(HttpMethod.GET,"/api/v1/admin/**").hasRole("ADMIN")
 							//Tất cả các request khác đều phải được xác thực danh tính
-//							.anyRequest().authenticated()
+							.anyRequest().authenticated()
 							.and()
 							//Không tạo sessionJID
 							.sessionManagement()

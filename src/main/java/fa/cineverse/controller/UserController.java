@@ -18,6 +18,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -92,7 +93,7 @@ public class UserController {
 	 * @Day: 19 May 2023 | @Time: 14:17:05
 	 * @Return: ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/sign-in", method = RequestMethod.POST)
 	public ResponseEntity<?> userLoginRequest(@Valid @RequestBody LoginRequest loginRequest,
 			BindingResult bindingResult) {
 		new LoginRequest().validate(loginRequest, bindingResult);
@@ -104,6 +105,7 @@ public class UserController {
 		}
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
 		CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
@@ -117,7 +119,7 @@ public class UserController {
 	 * @Day: 19 May 2023 | @Time: 14:17:02
 	 * @Return: ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/admin/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/sign-in", method = RequestMethod.POST)
 	public ResponseEntity<?> adminLoginRequest(@Valid @RequestBody LoginAdminRequest loginAdminRequest,
 			BindingResult bindingResult) {
 		new LoginAdminRequest().validate(loginAdminRequest, bindingResult);
@@ -218,8 +220,10 @@ public class UserController {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				return ResponseEntity.ok("Gửi yêu cầu thành công, vui lòng kiểm tra mail!");
 		}
-		return ResponseEntity.ok("OK");
+		return ResponseEntity.badRequest().body("Tài khoản này chưa tồn tại trong hệ thống!");
+
 	}
 
 	/**
@@ -281,32 +285,32 @@ public class UserController {
 		}
 		//Kiểm tra dữ liệu email đã tồn tại trong database chưa.
 		User users = userService.findByUsername(userDTO.getUsername());
-		if(users!=null) {
+		if(users==null) {
 			User user = new User();
 			BeanUtils.copyProperties(userDTO, user);
 			userService.saveUser(user);
 			Customer customer = new Customer(userDTO.getFullName(),userDTO.getUsername(),userDTO.getAddress(),userDTO.getPhoneNumber(),userDTO.getBirthday(),userDTO.isGender());
 			customer.setUser(user);
 			customerService.saveCustomer(customer);
-			return ResponseEntity.ok("Đăng ký thành công!");
+			return ResponseEntity.ok().body("Đăng ký thành công");
 		}
-
-		return ResponseEntity.badRequest().body("Email đã được đăng ký!");
+		return new ResponseEntity<>("Email đã được đăng ký",HttpStatus.CONFLICT);
+//		return ResponseEntity.created(HttpStatus.CONFLICT).body("Email đã được đăng ký");
 	}
 	
 	
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username,HttpServletRequest request){
 		//Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng token gửi về
-		String tokenString = request.getHeader("Authorization");
-		String token = null;
-		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
-			token = tokenString.substring(7,tokenString.length());
-        }
-		String usernameToken = jwtCommon.getUsernameFromToken(token);
-		if(username.equals(usernameToken)) {
-			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-		}
+//		String tokenString = request.getHeader("Authorization");
+//		String token = null;
+//		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+//			token = tokenString.substring(7,tokenString.length());
+//        }
+//		String usernameToken = jwtCommon.getUsernameFromToken(token);
+//		if(username.equals(usernameToken)) {
+//			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+//		}
 		User user = userService.findByUsername(username);
 		if(user!=null) {
 			Customer customer = customerService.findByUser(user);
@@ -319,7 +323,7 @@ public class UserController {
 		
 	}
 	
-	@PatchMapping("/user/user-update")
+	@PatchMapping("/user/profile-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult,HttpServletRequest request){
 		Map<String, String> errorMap = new HashMap<>();
 		if(bindingResult.hasErrors()) {
@@ -355,7 +359,7 @@ public class UserController {
 	 * @Day: 19 May 2023 | @Time: 14:16:58
 	 * @Return: ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/user/history-order", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username")String username) {
 		User user = userService.findByUsername(username);
 		
