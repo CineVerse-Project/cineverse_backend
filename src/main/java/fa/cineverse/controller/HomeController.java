@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fa.cineverse.dto.MovieTop10DTO;
 import fa.cineverse.model.Movie;
 import fa.cineverse.service.MovieService;
 
@@ -49,14 +50,14 @@ public class HomeController {
 
 	@GetMapping("/movie-top-10-is-showing")
 	public ResponseEntity<?> HomeMovieTop10IsShowing() {
-		List<String> movieListTop10IsShowing = movieService.findTop10MovieIsShowing();
+		List<MovieTop10DTO> movieListTop10IsShowing = movieService.findTop10MovieIsShowing();
 		if (movieListTop10IsShowing.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(movieListTop10IsShowing, HttpStatus.OK);
 	}
 
-	@GetMapping("/movie/{movieId}")
+	@GetMapping("/movie-detail/{movieId}")
 	public ResponseEntity<?> HomeMovieDetail(@PathVariable String movieId) {
 		Movie movieDetail = movieService.findMovieDetailById(movieId);
 		if (movieDetail == null) {

@@ -3,14 +3,17 @@ package fa.cineverse.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import fa.cineverse.dto.MovieTop10DTO;
 import fa.cineverse.model.Movie;
 
 public interface MovieRepository extends JpaRepository<Movie, String> {
-			
-	/**
-	 * @Author: TriLT6 | @User: TRUNG TRI
+
+	 /** @Author: TriLT6 | @User: TRUNG TRI
 	 * @Day: May 18, 2023 | @Time: 4:32:52 PM
 	 * @Package: fa.cineverse.repository
 	 * @FileName: MovieRepository.java
@@ -60,7 +63,9 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
 	 * @Return: List<String>
 	 * @Note: Top 10 phim DANG cong chieu co so luong ve ban ra nhieu nhat 
 	 */
-	@Query(value = "select count(ticket.ticket_id) as titket_quantity, movie.movie_name "
+	@Query(value = "select count(ticket.ticket_id) as quantity, "
+				 + "movie.movie_name as movieName, "
+				 + "movie.image_url as imageUrl "
 				 + "from movie "
 				 + "inner join schedule on movie.movie_id = schedule.movie_id "
 				 + "inner join ticket on schedule.room_id = ticket.room_id  "
@@ -69,5 +74,23 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
 				 + "group by schedule.movie_id "
 				 + "order by count(ticket.ticket_id) desc "
 				 + "limit 10 ", nativeQuery = true)
-	List<String> findTop10MovieIsShowing();
+	List<MovieTop10DTO> findTop10MovieIsShowing();
+
+	 /** @Author: DatNH20 
+	 * @Day: May 22, 2023 | @Time: 7:49:56 AM
+	 * @Return: void
+	 * @Note: deletes
+	 */
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE movie SET is_delete = 1 WHERE movie_id= :id", nativeQuery = true)
+	void deleteMovie(@Param("id") String id);
+	
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 22, 2023 | @Time: 7:50:02 AM
+	 * @Return: Movie
+	 * @Note: find by name
+	 */
+	Movie findByMovieName(String movieName);
 }
