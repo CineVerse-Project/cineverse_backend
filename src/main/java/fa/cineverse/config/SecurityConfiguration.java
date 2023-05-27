@@ -55,60 +55,80 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:23:36
+	 * TODO
+	 * @Return: 
+	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// TODO Auto-generated method stub
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:23:36
+	 * TODO
+	 * @Return: AuthenticationManager
+	 */
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		// TODO Auto-generated method stub
 		return super.authenticationManagerBean();
 	}
-
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:23:36
+	 * TODO
+	 * @Return: 
+	 */
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		// TODO Auto-generated method stub
 		web.ignoring().antMatchers("/resources/**");
 	}
 
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 23 May 2023 | @Time: 08:23:36
+	 * TODO
+	 * @Return: 
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
 		//CORS để các host đều được truy cập
 		//CSRF được dùng để tránh các trường hợp bị tấn công csrf
 		http.csrf().disable();
-		http.cors().configurationSource(request -> {
-			CorsConfiguration corsConfiguration = new CorsConfiguration();
-			corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
-			corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
-			return corsConfiguration;
-		});
+		http.cors();
+
 		http.authorizeHttpRequests(
 				(auth)->
 				{
 						try {
-							auth
+							
 							//Request không bị yêu cầu xác thực danh tính
-							.antMatchers(
-									HttpMethod.POST,
-									"/api/v1/admin/sign-in"
-									,"/api/v1/sign-in"
-									,"/api/v1/sign-up")
-							.permitAll()
+							auth
+							.antMatchers(HttpMethod.POST,
+							"/api/v1/sign-in/admin"
+							,"/api/v1/sign-in"
+							,"/api/v1/sign-up",
+							"/api/v1/reset-password",
+							"/api/v1/forgot-password").permitAll();
 							//Request dành cho role user
-							.antMatchers(HttpMethod.GET,"/api/v1/user/**").hasRole("USER")
+							auth.antMatchers(HttpMethod.GET,"/api/v1/user/**").hasAnyRole("USER","ADMIN");
 							//Request dành cho role admin hoặc user
-							.antMatchers(HttpMethod.PATCH,"/api/v1/user/user-update").hasAnyRole("USER","ADMIN")
+//							auth.antMatchers(HttpMethod.PATCH,"/api/v1/user/user-update").hasAnyRole("USER","ADMIN");
 							//Request dành cho role admin
-							.antMatchers(HttpMethod.GET,"/api/v1/admin/**").hasRole("ADMIN")
+							auth.antMatchers(HttpMethod.GET,"/api/v1/admin/**").hasRole("ADMIN");
 							//Tất cả các request khác đều phải được xác thực danh tính
-							.anyRequest().authenticated()
-							.and()
+							
+//							and()
 							//Không tạo sessionJID
+							auth.and()
 							.sessionManagement()
 							.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 							.and()
@@ -121,9 +141,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 									// TODO Auto-generated method stub
 									response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Error: unauthorized");
 								}
-							});
-//							.and()
-//							.httpBasic();
+							})
+							.and()
+							.httpBasic();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -156,22 +176,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         bean.setTemplateLoaderPath("classpath:/templates/");
         return bean;
     }
-//	@Bean
-//	public JavaMailSender getJavaMailSender() {
-//	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//	    mailSender.setHost("smtp.gmail.com");
-//	    mailSender.setPort(587);
-//	    
-//	    mailSender.setUsername("cineverse.service@gmail.com");
-//	    mailSender.setPassword("java2301s");
-//	    
-//	    Properties props = mailSender.getJavaMailProperties();
-//	    props.put("mail.transport.protocol", "smtp");
-//	    props.put("mail.smtp.auth", "true");
-//	    props.put("mail.smtp.starttls.enable", "true");
-//	    props.put("mail.debug", "true");
-//	    
-//	    return mailSender;
-//	}
-	
+
 }

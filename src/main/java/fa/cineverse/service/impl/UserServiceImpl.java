@@ -39,7 +39,13 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private RoleRepository roleRepository;
-
+	
+	/**
+	 * @author HuuNQ
+	 *
+	 * 14 May 2023
+	 * saveUser
+	 */
 	@Override
 	public void saveUser(User user) {
 		// TODO Auto-generated method stub
@@ -51,6 +57,12 @@ public class UserServiceImpl implements UserService{
 		userRoleRepository.save(userRole);
 	}
 
+	/**
+	 * @author HuuNQ
+	 *
+	 * 14 May 2023
+	 * findByUsername
+	 */
 	@Override
 	public User findByUsername(String username) {
 		// TODO Auto-generated method stub
@@ -60,13 +72,23 @@ public class UserServiceImpl implements UserService{
 		}
 		return null;
 	}
-
+	/**
+	 * @author HuuNQ
+	 *
+	 * 14 May 2023
+	 * createResetPassword
+	 */
 	@Override
 	public void createResetPassword(User user) {
 		// TODO Auto-generated method stub
 		userRepository.save(user);
 	}
-
+	/**
+	 * @author HuuNQ
+	 *
+	 * 14 May 2023
+	 * updateUser
+	 */
 	@Override
 	public void updateUser(User user) {
 		// TODO Auto-generated method stub

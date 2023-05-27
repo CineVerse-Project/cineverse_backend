@@ -34,7 +34,12 @@ public class EmailServiceImpl implements EmailService{
 	
 	@Autowired
 	private Configuration configuration;
-	
+	/**
+	 * @author HuuNQ
+	 *
+	 * 19 May 2023
+	 * 
+	 */
 	@Override
 	public void sendEmail(String to,String tokenPassword) throws MessagingException, IOException, TemplateException {
 		MimeMessage message = javaMailSender.createMimeMessage();
@@ -47,7 +52,12 @@ public class EmailServiceImpl implements EmailService{
         helper.setText(content);
         javaMailSender.send(message);
     }
-	
+	/**
+	 * @author HuuNQ
+	 *
+	 * 19 May 2023
+	 * 
+	 */
 	String getEmailContent(String to, String tokenPassword) throws IOException, TemplateException {
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();

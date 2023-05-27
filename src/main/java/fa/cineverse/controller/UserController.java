@@ -119,7 +119,7 @@ public class UserController {
 	 * @Day: 19 May 2023 | @Time: 14:17:02
 	 * @Return: ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/admin/sign-in", method = RequestMethod.POST)
+	@RequestMapping(value = "/sign-in/admin", method = RequestMethod.POST)
 	public ResponseEntity<?> adminLoginRequest(@Valid @RequestBody LoginAdminRequest loginAdminRequest,
 			BindingResult bindingResult) {
 		new LoginAdminRequest().validate(loginAdminRequest, bindingResult);
@@ -139,47 +139,7 @@ public class UserController {
 		return ResponseEntity.ok(new JwtResponse(jwtGenerate, loginAdminRequest.getUsername(), userRoles));
 	}
 
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 22 May 2023 | @Time: 08:42:06
-	 * @Return: ResponseEntity<?>
-	 */
-	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
-	public ResponseEntity<?> user(HttpServletRequest request,@Valid @RequestBody ChangePasswordRequest changePassword, BindingResult bindingResult) {
-		new ChangePasswordRequest().validate(changePassword, bindingResult);
-		Map<String, String> errorMap = new HashMap<>();
-		if(bindingResult.hasErrors()) {
-			bindingResult.getAllErrors().forEach(
-					x -> errorMap.put(x.getCode(), x.getDefaultMessage())
-					);
-			
-			return ResponseEntity.badRequest().body(errorMap);
-		}
-		String tokenString = request.getHeader("Authorization");
-		String token = null;
-		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
-			token = tokenString.substring(7,tokenString.length());
-        }
-		String username = jwtCommon.getUsernameFromToken(token);
-		if(changePassword.getUsername().equals(username)) {
-			User user = userService.findByUsername(changePassword.getUsername());
-			if(user!=null) {
-				PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-				boolean checkPassword = passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword());
-				if(checkPassword) {
-					user.setPassword(changePassword.getNewPassword());
-					userService.updateUser(user);
-					return ResponseEntity.ok().body("Thao tác thành công");
-				}else {
-					errorMap.put("oldPassword", "Sai mật khẩu!");
-					return ResponseEntity.badRequest().body(errorMap);
-				}
-			}else {
-				return ResponseEntity.notFound().build();
-			}
-		}
-		return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-	}
+	
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:55
@@ -298,19 +258,26 @@ public class UserController {
 //		return ResponseEntity.created(HttpStatus.CONFLICT).body("Email đã được đăng ký");
 	}
 	
-	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 19 May 2023 | @Time: 14:16:58
+	 * @Return: ResponseEntity<?>
+	 */
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username,HttpServletRequest request){
 		//Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng token gửi về
-//		String tokenString = request.getHeader("Authorization");
-//		String token = null;
-//		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
-//			token = tokenString.substring(7,tokenString.length());
-//        }
-//		String usernameToken = jwtCommon.getUsernameFromToken(token);
-//		if(username.equals(usernameToken)) {
-//			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-//		}
+		String tokenString = request.getHeader("Authorization");
+		String token = null;
+		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+			token = tokenString.substring(7,tokenString.length());
+        }
+		if(!jwtCommon.validateJwtToken(token)){
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+		String usernameToken = jwtCommon.getUsernameFromToken(token);
+		if(!username.equals(usernameToken)) {
+			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+		}
 		User user = userService.findByUsername(username);
 		if(user!=null) {
 			Customer customer = customerService.findByUser(user);
@@ -323,6 +290,11 @@ public class UserController {
 		
 	}
 	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 19 May 2023 | @Time: 14:16:58
+	 * @Return: ResponseEntity<?>
+	 */
 	@PatchMapping("/user/profile-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult,HttpServletRequest request){
 		Map<String, String> errorMap = new HashMap<>();
@@ -336,8 +308,11 @@ public class UserController {
 		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
 			token = tokenString.substring(7,tokenString.length());
         }
+		if(!jwtCommon.validateJwtToken(token)){
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
-		if(userDTO.getUsername().equals(usernameToken)) {
+		if(!userDTO.getUsername().equals(usernameToken)) {
 			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
 		}
 		User user = userService.findByUsername(userDTO.getUsername());
@@ -353,14 +328,70 @@ public class UserController {
 		
 		return ResponseEntity.notFound().build();
 	}
-	
+	/**
+	 * @Author: HuuNQ
+	 * @Day: 22 May 2023 | @Time: 08:42:06
+	 * @Return: ResponseEntity<?>
+	 */
+	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
+	public ResponseEntity<?> changePassword(@RequestParam("username")String username,HttpServletRequest request,@Valid @RequestBody ChangePasswordRequest changePassword, BindingResult bindingResult) {
+		new ChangePasswordRequest().validate(changePassword, bindingResult);
+		Map<String, String> errorMap = new HashMap<>();
+		if(bindingResult.hasErrors()) {
+			bindingResult.getAllErrors().forEach(
+					x -> errorMap.put(x.getCode(), x.getDefaultMessage())
+					);
+			return ResponseEntity.badRequest().body(errorMap);
+		}
+		String tokenString = request.getHeader("Authorization");
+		String token = null;
+		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+			token = tokenString.substring(7,tokenString.length());
+        }
+		if(!jwtCommon.validateJwtToken(token)){
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+		String usernameToken = jwtCommon.getUsernameFromToken(token);
+
+		if(username.equals(usernameToken)) {
+			User user = userService.findByUsername(username);
+			if(user!=null) {
+				PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+				boolean checkPassword = passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword());
+				if(checkPassword) {
+					user.setPassword(changePassword.getNewPassword());
+					userService.updateUser(user);
+					return ResponseEntity.ok().body("Đổi mật khẩu thành công!");
+				}else {
+					errorMap.put("oldPassword", "Sai mật khẩu!");
+					return ResponseEntity.badRequest().body(errorMap);
+				}
+			}else {
+				return ResponseEntity.notFound().build();
+			}
+		}
+		return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+	}
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
 	 * @Return: ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
-	public ResponseEntity<?> historyOrder(@RequestParam("username")String username) {
+	public ResponseEntity<?> historyOrder(@RequestParam("username")String username,HttpServletRequest request) {
+		String tokenString = request.getHeader("Authorization");
+		String token = null;
+		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+			token = tokenString.substring(7,tokenString.length());
+        }
+		if(!jwtCommon.validateJwtToken(token)){
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+		String usernameToken = jwtCommon.getUsernameFromToken(token);
+		if(!username.equals(usernameToken)) {
+			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+		}
+		
 		User user = userService.findByUsername(username);
 		
 		if(user!=null) {
@@ -379,8 +410,19 @@ public class UserController {
 	 * @Return: ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
-	public ResponseEntity<?> earnPoints(@RequestParam("username")String username) {
-		
+	public ResponseEntity<?> earnPoints(@RequestParam("username")String username,HttpServletRequest request) {
+		String tokenString = request.getHeader("Authorization");
+		String token = null;
+		if(StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ") ){
+			token = tokenString.substring(7,tokenString.length());
+        }
+		if(!jwtCommon.validateJwtToken(token)){
+			return new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+		String usernameToken = jwtCommon.getUsernameFromToken(token);
+		if(!username.equals(usernameToken)) {
+			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
+		}
 		User user = userService.findByUsername(username);
 		
 		if(user!=null) {

@@ -31,6 +31,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
 	public UserRepository userRepository;
 	
+	/**
+	 * @author HuuNQ
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub

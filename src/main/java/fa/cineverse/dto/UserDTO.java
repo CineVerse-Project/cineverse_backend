@@ -20,7 +20,7 @@ import fa.cineverse.model.Customer;
  * 
  */
 public class UserDTO implements Validator{
-//	private String userId;
+	private String customerId;
 	private String fullName;
 	private LocalDate birthday;
 	private String phoneNumber;
@@ -44,18 +44,18 @@ public class UserDTO implements Validator{
 		this.address = address;
 	}
 	
-//	public UserDTO(String userId, String fullName, LocalDate birthday, String phoneNumber, boolean gender,
-//			String username, String password, String address) {
-//		super();
-//		this.userId = userId;
-//		this.fullName = fullName;
-//		this.birthday = birthday;
-//		this.phoneNumber = phoneNumber;
-//		this.gender = gender;
-//		this.username = username;
-//		this.password = password;
-//		this.address = address;
-//	}
+	public UserDTO(String customerId, String fullName, LocalDate birthday, String phoneNumber, boolean gender,
+			String username, String password, String address) {
+		super();
+		this.customerId = customerId;
+		this.fullName = fullName;
+		this.birthday = birthday;
+		this.phoneNumber = phoneNumber;
+		this.gender = gender;
+		this.username = username;
+		this.password = password;
+		this.address = address;
+	}
 	public String getFullName() {
 		return fullName;
 	}
@@ -99,14 +99,13 @@ public class UserDTO implements Validator{
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	
-	
-//	public String getUserId() {
-//		return userId;
-//	}
-//	public void setUserId(String userId) {
-//		this.userId = userId;
-//	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
 	@Override
 	public boolean supports(Class<?> clazz) {
 		// TODO Auto-generated method stub
