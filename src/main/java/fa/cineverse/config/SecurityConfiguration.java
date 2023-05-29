@@ -34,8 +34,8 @@ import fa.cineverse.common.JwtRequestFilter;
 /**
  * @author HuuNQ
  *
- *         12 May 2023
- * 
+ * 12 May 2023
+ *
  */
 @Configuration
 @EnableWebSecurity
@@ -56,6 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
+
 
 	/**
 	 * @Author: HuuNQ
@@ -92,11 +93,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		// CSRF được dùng để tránh các trường hợp bị tấn công csrf
 		http.csrf().disable();
 		http.cors();
-		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
 		http.authorizeRequests().antMatchers("/api/v1/sign-in/admin", "/api/v1/sign-in", "/api/v1/sign-up",
 				"/api/v1/reset-password", "/api/v1/forgot-password").permitAll();
 		// Request dành cho role user
-		http.authorizeRequests().antMatchers("/api/v1/user/**").hasAnyAuthority("ROLE_USER");
+		http.authorizeRequests().antMatchers("/api/v1/user/**").hasAuthority("ROLE_USER");
 		// Request dành cho role admin
 		http.authorizeRequests().antMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN");
 		http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
@@ -106,7 +107,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				// TODO Auto-generated method stub
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: unauthorized");
 			}
-		});
+		})
+		.and()
+		.httpBasic();
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
 	/**
@@ -126,10 +130,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	 */
 	@Bean(name = "emailConfigBean")
 	@Primary
-	public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration(ResourceLoader resourceLoader) {
-		FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
-		bean.setTemplateLoaderPath("classpath:/templates/");
-		return bean;
-	}
-
+    public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration(ResourceLoader resourceLoader) {
+        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
+        bean.setTemplateLoaderPath("classpath:/templates/");
+        return bean;
+    }
 }

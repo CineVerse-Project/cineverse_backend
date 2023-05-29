@@ -10,6 +10,7 @@ import fa.cineverse.model.Customer;
 import fa.cineverse.model.User;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+    Customer findByUser_Username(String username);
 
 	Customer findByUser(User username);
 	
@@ -66,3 +67,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 					+ "where customer_id = :customerId group by b.booking_id",nativeQuery = true)
 	List<Object[]> listEarnPointsByUsername(@Param("customerId") Integer customerId);
 }
+

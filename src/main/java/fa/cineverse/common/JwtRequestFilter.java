@@ -26,8 +26,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 /**
  * @author HuuNQ
  *
+<<<<<<< HEAD
  *         13 May 2023
  * 
+=======
+ * 13 May 2023
+ *
+>>>>>>> ad95e652389d9dfe0a83f70a95b5d59e18e1ce58
  */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -57,14 +62,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 				filterChain.doFilter(request, response);
-			} else {
-				filterChain.doFilter(request, response);
+				return;
 			}
 		}catch(ExpiredJwtException e) {
 			e.getCause();
 		}
 		
-
 		filterChain.doFilter(request, response);
 	}
 

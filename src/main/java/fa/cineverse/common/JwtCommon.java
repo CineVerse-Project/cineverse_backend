@@ -19,12 +19,12 @@ import io.jsonwebtoken.UnsupportedJwtException;
  * @author HuuNQ
  *
  * 13 May 2023
- * 
+ *
  */
 @Component
 public class JwtCommon {
 	private final String secretKey = "cineverse";
-    private final Integer expiredTokenMs = 360_000;
+    private final Integer expiredTokenMs = 600_000;
 
     public String generateToken(Authentication authentication){
     	org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();

@@ -10,14 +10,14 @@ import java.util.List;
  * @author HuuNQ
  *
  * 12 May 2023
- * 
+ *
  */
 public class JwtResponse {
 	private String type = "Bearer";
 	private String token;
 	private String username;
 	private List<String> roles;
-	
+
 	public JwtResponse() {
 		super();
 	}

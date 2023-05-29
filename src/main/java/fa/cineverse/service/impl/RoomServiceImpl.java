@@ -2,10 +2,12 @@ package fa.cineverse.service.impl;
 
 import fa.cineverse.model.Room;
 import fa.cineverse.model.Seat;
+import fa.cineverse.model.SeatType;
 import fa.cineverse.model.Theater;
 import fa.cineverse.repository.RoomRepository;
 import fa.cineverse.service.RoomService;
 import fa.cineverse.service.SeatService;
+import fa.cineverse.service.SeatTypeService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +27,9 @@ public class RoomServiceImpl implements RoomService {
     
     @Autowired
 	private SeatService seatService;
+    
+    @Autowired
+    private SeatTypeService seatTypeService;
 
 	/**
 	 * @Author: DatNH20
@@ -85,6 +90,8 @@ public class RoomServiceImpl implements RoomService {
 	 */
 	@Override
 	public void createRoom(Room room) {
+		SeatType seatVipSeatType = seatTypeService.get("ST-0001");
+		SeatType seatNormalSeatType = seatTypeService.get("ST-0002");
 		LocalDateTime now = LocalDateTime.now();
 		room.setCreatedAt(now);
 		room.setUpdatedAt(null);
@@ -95,6 +102,11 @@ public class RoomServiceImpl implements RoomService {
             	seat.setRoom(room);
                 char rowChar = (char) ('A' + i - 1);
                 String seatName = (String) (rowChar +""+ j);
+                if (i <= 3) {
+					seat.setSeatType(seatVipSeatType);
+				}else {
+					seat.setSeatType(seatNormalSeatType);
+				}
                 seat.setSeatName(seatName);
                 seatService.createSeat(seat);
             }

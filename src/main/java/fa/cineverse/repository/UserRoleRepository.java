@@ -9,8 +9,6 @@ import fa.cineverse.model.UserRole;
 /**
  * The Interface UserRoleRepository.
  */
-@Repository
-@Transactional
 public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
 
 }

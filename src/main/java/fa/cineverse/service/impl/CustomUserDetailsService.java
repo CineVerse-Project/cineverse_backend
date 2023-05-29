@@ -22,14 +22,13 @@ import fa.cineverse.repository.UserRepository;
  * @author HuuNQ
  *
  * 13 May 2023
- * 
+ *
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-	
+
 	@Autowired
-	public UserRepository userRepository;
-	
+	public UserRepository userRepository;	
 	/**
 	 * @author HuuNQ
 	 */

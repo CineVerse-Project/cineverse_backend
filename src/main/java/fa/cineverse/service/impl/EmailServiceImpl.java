@@ -25,13 +25,13 @@ import freemarker.template.TemplateException;
  * @author HuuNQ
  *
  * 19 May 2023
- * 
+ *
  */
 @Service
 public class EmailServiceImpl implements EmailService{
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	@Autowired
 	private Configuration configuration;
 	/**
@@ -40,6 +40,7 @@ public class EmailServiceImpl implements EmailService{
 	 * 19 May 2023
 	 * 
 	 */
+
 	@Override
 	public void sendEmail(String to,String tokenPassword) throws MessagingException, IOException, TemplateException {
 		MimeMessage message = javaMailSender.createMimeMessage();

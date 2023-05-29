@@ -1,5 +1,6 @@
 package fa.cineverse.controller;
 
+import fa.cineverse.dto.ScheduleCheckDTO;
 import fa.cineverse.dto.ScheduleDTO;
 import fa.cineverse.model.Movie;
 import fa.cineverse.model.Room;
@@ -25,6 +26,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -46,16 +48,23 @@ public class ScheduleController {
      */
     @GetMapping("")
     public ResponseEntity<?> findAll(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "5") int size) {
+                                     @RequestParam(defaultValue = "5") int size,
+                                     @RequestParam(defaultValue = "") String keyword) {
         Pageable pageable;
         pageable = PageRequest.of(page, size);
-        Page<Schedule> schedulePage = scheduleService.findAll(pageable);
+        Page<Schedule> schedulePage = scheduleService.findAll(pageable, keyword);
         if (schedulePage.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(schedulePage, HttpStatus.OK);
 
     }
+
+    /**
+     * @Author: AnP1
+     * @Day: May 23, 2023 | @Time: 9:03:53 AM
+     * @Return: ResponseEntity<?>
+     */
 
     @GetMapping("/detail")
     public ResponseEntity<?> findById(@RequestParam String roomId,
@@ -69,6 +78,12 @@ public class ScheduleController {
         return new ResponseEntity<>(schedule, HttpStatus.OK);
     }
 
+
+    /**
+     * @Author: AnP1
+     * @Day: May 23, 2023 | @Time: 9:03:59 AM
+     * @Return: ResponseEntity<?>
+     */
     @PostMapping("")
     public ResponseEntity<?> save(@Validated @RequestBody ScheduleDTO scheduleDTO, BindingResult bindingResult) {
         Map<String, String> errors = new HashMap<>();
@@ -84,21 +99,27 @@ public class ScheduleController {
         }
         Schedule schedule = scheduleService.findById(scheduleDTO.getScheduleId());
         if (schedule != null) {
-            String errorMessage = "Shedule date time '" + scheduleDTO.getScheduleId().getSheduleDateTime()
-                    + "' already exists in room '" + scheduleDTO.getScheduleId().getRoomId() + "'";
+            String errorMessage = "Lịch chiếu này đã tồn tại ở phòng  '" + scheduleDTO.getScheduleId().getRoomId() + "'";
             errors.put("scheduleId", errorMessage);
         }
 
+
         Room room = roomService.findById(scheduleDTO.getScheduleId().getRoomId());
         if (room == null) {
-            String errorMessage = "Room ID is not exist";
+            String errorMessage = "Room is not exist";
             errors.put("roomId", errorMessage);
         }
 
         Movie movie = movieService.findById(scheduleDTO.getMovie().getMovieId());
-        if (movie == null) {
-            String errorMessage = "Movie ID is not exist";
+        if (movie == null || movie.isDelete()) {
+            String errorMessage = "Movie is not exist";
             errors.put("movieId", errorMessage);
+        } else {
+            List<ScheduleCheckDTO> scheduleList = scheduleService.check(scheduleDTO, movie);
+            if (!scheduleList.isEmpty()) {
+                String errorMessage = "Đã có lịch chiếu khác nằm trong khung giờ này. Vui lòng chọn giờ chiếu khác!!!";
+                errors.put("scheduleId", errorMessage);
+            }
         }
 
         if (!errors.isEmpty()) {
@@ -112,6 +133,11 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleSaved, HttpStatus.OK);
     }
 
+    /**
+     * @Author: AnP1
+     * @Day: May 23, 2023 | @Time: 9:04:03 AM
+     * @Return: ResponseEntity<?>
+     */
     @PutMapping("")
     public ResponseEntity<?> update(@Validated @RequestBody ScheduleDTO scheduleDTO, BindingResult bindingResult) {
         Map<String, String> errors = new HashMap<>();
@@ -138,7 +164,7 @@ public class ScheduleController {
         }
 
         Movie movie = movieService.findById(scheduleDTO.getMovie().getMovieId());
-        if (movie == null) {
+        if (movie == null || movie.isDelete()) {
             String errorMessage = "Movie ID is not exist";
             errors.put("movieId", errorMessage);
         }
@@ -154,9 +180,14 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleSaved, HttpStatus.OK);
     }
 
+    /**
+     * @Author: AnP1
+     * @Day: May 23, 2023 | @Time: 9:04:08 AM
+     * @Return: ResponseEntity<?>
+     */
     @DeleteMapping("")
     public ResponseEntity<?> delete(@RequestParam("roomId") String roomId,
-                                      @RequestParam("sheduleDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime sheduleDateTime) {
+                                    @RequestParam("sheduleDateTime") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime sheduleDateTime) {
         ScheduleId scheduleId = new ScheduleId(sheduleDateTime, roomId);
         Schedule schedule = scheduleService.findById(scheduleId);
         if (schedule == null) {
@@ -166,11 +197,29 @@ public class ScheduleController {
         return new ResponseEntity<>(schedule, HttpStatus.OK);
     }
 
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         String errorMessage = "Schedule date time does not match formart yyyy-MM-dd'T'HH:mm";
         Map<String, String> errors = new HashMap<>();
         errors.put("sheduleDateTime", errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * @Author: HuongNT106
+     * @Day: May 26, 2023 | @Time: 11:32:07 PM
+     * @Return: ResponseEntity<List<Schedule>>
+     */
+    @GetMapping("/movie")
+    public ResponseEntity<List<Schedule>> findScheduleByMovieAndScheduleAndProvince(@RequestParam String movieId,
+                                                 @RequestParam("scheduleDateTime")
+                                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime scheduleDateTime,
+                                                 @RequestParam("provinceId") String provinceId) {
+        List<Schedule> schedules = scheduleService.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
+        if (schedules.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 }
