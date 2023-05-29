@@ -63,12 +63,12 @@ import net.bytebuddy.utility.RandomString;
  * @author HuuNQ
  *
  *         12 May 2023
- * 
+ *
  */
 @RestController
 @CrossOrigin("*")
 public class UserController {
-	
+
 	@Autowired
 	private JwtCommon jwtCommon;
 
@@ -80,10 +80,10 @@ public class UserController {
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private CustomerService customerService;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -150,7 +150,7 @@ public class UserController {
 			bindingResult.getAllErrors().forEach(
 					x -> errorMap.put(x.getCode(), x.getDefaultMessage())
 					);
-			
+
 			return ResponseEntity.badRequest().body(errorMap);
 		}
 		String tokenString = request.getHeader("Authorization");
@@ -187,16 +187,16 @@ public class UserController {
 	public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest,BindingResult bindingResult) {
 		new  ForgotPasswordRequest().validate(forgotPasswordRequest, bindingResult);
 		Map<String,String> errorMap = new HashMap<>();
-		
+
 		if(bindingResult.hasErrors()) {
 			bindingResult.getAllErrors().forEach(x->{
 				errorMap.put(x.getCode(), x.getDefaultMessage());
 			});
 			return ResponseEntity.badRequest().body(errorMap);
 		}
-		
+
 		User user = userService.findByUsername(forgotPasswordRequest.getUsername());
-		
+
 		if (user != null) {
 				String resetPassword = RandomString.make(20);
 				user.setResetPasswordToken(resetPassword);
@@ -232,7 +232,7 @@ public class UserController {
 		if(!username.isPresent() || !token.isPresent()) {
 			return ResponseEntity.badRequest().body("Yêu cầu chưa hợp lệ!");
 		}
-		
+
 		String usernamePresent = null;
 		if(username.isPresent()) {
 			usernamePresent = username.get();
@@ -242,14 +242,14 @@ public class UserController {
 			tokenPresent = token.get();
 		}
 
-		
+
 		new ResetPasswordRequest().validate(resetPassword, result);
 		Map<String, String> errorMap = new HashMap<>();
 		if(result.hasErrors()) {
 			result.getAllErrors().forEach(
 					x -> errorMap.put(x.getCode(), x.getDefaultMessage())
 					);
-			
+
 			return ResponseEntity.badRequest().body(errorMap);
 		}
 
@@ -262,14 +262,14 @@ public class UserController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @Author: HuuNQ
 	 * @Day: 22 May 2023 | @Time: 08:54:08
 	 * @Return: ResponseEntity<?>
 	 */
-	
+
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult){
 		new UserDTO().validate(userDTO, bindingResult);
@@ -293,8 +293,8 @@ public class UserController {
 
 		return ResponseEntity.badRequest().body("Email đã được đăng ký!");
 	}
-	
-	
+
+
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username,HttpServletRequest request){
 		//Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng token gửi về
@@ -313,12 +313,12 @@ public class UserController {
 			if(customer!=null) {
 				return ResponseEntity.ok().body(customer);
 			}
-			
+
 		}
 		return ResponseEntity.notFound().build();
-		
+
 	}
-	
+
 	@PatchMapping("/user/user-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO,BindingResult bindingResult,HttpServletRequest request){
 		Map<String, String> errorMap = new HashMap<>();
@@ -346,10 +346,10 @@ public class UserController {
 				return ResponseEntity.ok("Cập nhật thành công");
 			}
 		}
-		
+
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
@@ -358,17 +358,17 @@ public class UserController {
 	@RequestMapping(value = "/user/history-order", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username")String username) {
 		User user = userService.findByUsername(username);
-		
+
 		if(user!=null) {
 			Customer customer = customerService.findByUser(user);
 			List<Object[]> historyOrder = customerService.allHistoryOrderByCustomer(customer);
 			return ResponseEntity.ok().body(historyOrder);
 		}
-		
+
 		return ResponseEntity.badRequest().build();
-		
+
 	}
-	
+
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 23 May 2023 | @Time: 08:19:11
@@ -376,16 +376,16 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
 	public ResponseEntity<?> earnPoints(@RequestParam("username")String username) {
-		
+
 		User user = userService.findByUsername(username);
-		
+
 		if(user!=null) {
 			Customer customer = customerService.findByUser(user);
 			List<Object[]> earnPoints = customerService.listEarnPoints(customer);
 			return ResponseEntity.ok().body(earnPoints);
 		}
-		
+
 		return ResponseEntity.badRequest().build();
-		
+
 	}
 }

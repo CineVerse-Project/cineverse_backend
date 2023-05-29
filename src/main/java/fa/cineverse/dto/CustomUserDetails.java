@@ -20,17 +20,17 @@ import fa.cineverse.model.UserRole;
  * @author HuuNQ
  *
  * 13 May 2023
- * 
+ *
  */
 public class CustomUserDetails implements UserDetails {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4074917036430799201L;
 	private User user;
 	private List<GrantedAuthority> grantedAuthority;
-	
-	
+
+
 	public CustomUserDetails() {
 		super();
 	}
@@ -116,7 +116,7 @@ public class CustomUserDetails implements UserDetails {
 	public void setGrantedAuthority(List<GrantedAuthority> grantedAuthority) {
 		this.grantedAuthority = grantedAuthority;
 	}
-	
+
 
 
 }

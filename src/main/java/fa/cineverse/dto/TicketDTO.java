@@ -92,6 +92,5 @@ public class TicketDTO {
 	public void setBooking(Booking booking) {
 		this.booking = booking;
 	}
-	
-	
+
 }

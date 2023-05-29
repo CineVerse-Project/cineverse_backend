@@ -18,6 +18,10 @@ public class IdentityCodeGenerator implements IdentifierGenerator {
 
 	private String prefix;
 
+	/**
+	 * @Author: AnP1
+	 * @Day: May 23, 2023 | @Time: 9:03:00 AM
+	*/
 	@Override
 	public Serializable generate(SharedSessionContractImplementor session, Object obj) throws HibernateException {
 
@@ -41,6 +45,10 @@ public class IdentityCodeGenerator implements IdentifierGenerator {
 
 	}
 
+	/**
+	 * @Author: AnP1
+	 * @Day: May 23, 2023 | @Time: 9:02:55 AM
+	*/
 	@Override
 	public void configure(Type type, Properties properties, ServiceRegistry serviceRegistry) throws MappingException {
 		prefix = properties.getProperty("prefix");

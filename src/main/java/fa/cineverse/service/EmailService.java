@@ -15,7 +15,7 @@ import freemarker.template.TemplateException;
  * @author HuuNQ
  *
  * 19 May 2023
- * 
+ *
  */
 public interface EmailService {
 	void sendEmail(String to,String tokenPassword) throws UnsupportedEncodingException, MessagingException, IOException, TemplateException;

@@ -23,14 +23,14 @@ import fa.cineverse.repository.UserRepository;
  * @author HuuNQ
  *
  * 13 May 2023
- * 
+ *
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-	
+
 	@Autowired
 	public UserRepository userRepository;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub

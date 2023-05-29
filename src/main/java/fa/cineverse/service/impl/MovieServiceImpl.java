@@ -3,17 +3,12 @@ package fa.cineverse.service.impl;
 import fa.cineverse.dto.MovieTop10DTO;
 import fa.cineverse.model.Movie;
 import fa.cineverse.repository.MovieRepository;
+import fa.cineverse.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import fa.cineverse.model.Movie;
-import fa.cineverse.repository.MovieRepository;
-import fa.cineverse.service.MovieService;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MovieServiceImpl implements MovieService {

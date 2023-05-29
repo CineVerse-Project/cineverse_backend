@@ -19,14 +19,14 @@ import fa.cineverse.service.UserService;
  * @author HuuNQ
  *
  * 14 May 2023
- * 
+ *
  */
 @Service
 public class UserServiceImpl implements UserService{
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
