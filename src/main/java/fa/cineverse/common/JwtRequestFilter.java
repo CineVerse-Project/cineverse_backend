@@ -14,57 +14,66 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import fa.cineverse.dto.CustomUserDetails;
+import fa.cineverse.service.impl.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 
 /**
  * @author HuuNQ
  *
- * 13 May 2023
+ *         13 May 2023
  * 
  */
 @Component
-public class JwtRequestFilter extends OncePerRequestFilter{
+public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Autowired
-    private JwtCommon jwtCommon;
+	private JwtCommon jwtCommon;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String token = getTokenFromRequest(request);
-            if(token != null && jwtCommon.validateJwtToken(token)){
-                String username = jwtCommon.getUsernameFromToken(token);
-                CustomUserDetails user = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authenticationToken
-                        = new UsernamePasswordAuthenticationToken(
-                        user,null,user.getAuthorities()
-                );
-                authenticationToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
-        }catch (ExpiredJwtException e){
-            System.out.println("Cannot set user authentication : "+e.getMessage());
-        }
-        filterChain.doFilter(request,response);
-    }
+	@Autowired
+	private CustomUserDetailsService customUserDetailsService;
 
-    public String getTokenFromRequest(HttpServletRequest request){
-            String bearerToken = request.getHeader("Authorization");
-            if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ") ){
-                return bearerToken.substring(7,bearerToken.length());
-            }
-            return null;
-    }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+
+		String tokenWithBearer = request.getHeader("Authorization");
+		if (tokenWithBearer == null || !tokenWithBearer.startsWith("Bearer ")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		String token = tokenWithBearer.substring(7);
+		try {
+			if (token != null && jwtCommon.validateJwtToken(token)) {
+				String username = jwtCommon.getUsernameFromToken(token);
+				UserDetails user = customUserDetailsService.loadUserByUsername(username);
+				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
+						null, user.getAuthorities());
+				authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+				filterChain.doFilter(request, response);
+			} else {
+				filterChain.doFilter(request, response);
+			}
+		}catch(ExpiredJwtException e) {
+			e.getCause();
+		}
+		
+
+		filterChain.doFilter(request, response);
+	}
+
+	public String getTokenFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7, bearerToken.length());
+		}
+		return null;
+	}
 
 }

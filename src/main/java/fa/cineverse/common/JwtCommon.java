@@ -9,8 +9,6 @@ import java.util.Date;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import fa.cineverse.dto.CustomUserDetails;
-import fa.cineverse.model.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -29,7 +27,7 @@ public class JwtCommon {
     private final Integer expiredTokenMs = 360_000;
 
     public String generateToken(Authentication authentication){
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+    	org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         return Jwts.builder().setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+expiredTokenMs))

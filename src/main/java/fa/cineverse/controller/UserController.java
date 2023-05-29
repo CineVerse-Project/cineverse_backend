@@ -41,11 +41,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.node.TextNode;
-
 import fa.cineverse.common.JwtCommon;
 import fa.cineverse.dto.ChangePasswordRequest;
-import fa.cineverse.dto.CustomUserDetails;
 import fa.cineverse.dto.ForgotPasswordRequest;
 import fa.cineverse.dto.JwtResponse;
 import fa.cineverse.dto.LoginAdminRequest;
@@ -105,10 +102,9 @@ public class UserController {
 		}
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
-		CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
 		List<String> userRoles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
 		return ResponseEntity.ok(new JwtResponse(jwtGenerate, loginRequest.getUsername(), userRoles));
@@ -133,7 +129,7 @@ public class UserController {
 				loginAdminRequest.getUsername(), loginAdminRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
-		CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
 		List<String> userRoles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
 		return ResponseEntity.ok(new JwtResponse(jwtGenerate, loginAdminRequest.getUsername(), userRoles));
@@ -272,7 +268,7 @@ public class UserController {
 			token = tokenString.substring(7,tokenString.length());
         }
 		if(!jwtCommon.validateJwtToken(token)){
-			return new ResponseEntity(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if(!username.equals(usernameToken)) {
@@ -309,7 +305,7 @@ public class UserController {
 			token = tokenString.substring(7,tokenString.length());
         }
 		if(!jwtCommon.validateJwtToken(token)){
-			return new ResponseEntity(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if(!userDTO.getUsername().equals(usernameToken)) {
@@ -349,7 +345,7 @@ public class UserController {
 			token = tokenString.substring(7,tokenString.length());
         }
 		if(!jwtCommon.validateJwtToken(token)){
-			return new ResponseEntity(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 
@@ -385,7 +381,7 @@ public class UserController {
 			token = tokenString.substring(7,tokenString.length());
         }
 		if(!jwtCommon.validateJwtToken(token)){
-			return new ResponseEntity(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if(!username.equals(usernameToken)) {
@@ -417,7 +413,7 @@ public class UserController {
 			token = tokenString.substring(7,tokenString.length());
         }
 		if(!jwtCommon.validateJwtToken(token)){
-			return new ResponseEntity(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if(!username.equals(usernameToken)) {

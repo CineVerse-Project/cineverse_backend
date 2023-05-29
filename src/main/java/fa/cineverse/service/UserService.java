@@ -4,7 +4,6 @@
  */
 package fa.cineverse.service;
 
-import java.util.List;
 
 import fa.cineverse.model.User;
 
@@ -23,5 +22,6 @@ public interface UserService {
 	void createResetPassword(User user);
 	
 	void updateUser(User user);
+
 
 }
