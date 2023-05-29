@@ -10,6 +10,7 @@ import fa.cineverse.model.Customer;
 import fa.cineverse.model.User;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+    Customer findByUser_Username(String username);
 
 	Customer findByUser(User username);
 	

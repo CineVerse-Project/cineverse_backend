@@ -1,9 +1,6 @@
 package fa.cineverse.service.impl;
 
-import fa.cineverse.dto.RevenueDTO;
-import fa.cineverse.dto.TicketDTO;
-import fa.cineverse.dto.Top3MovieInMonth;
-import fa.cineverse.dto.Top5TheaterInMonth;
+import fa.cineverse.dto.*;
 import fa.cineverse.repository.ReportRepository;
 import fa.cineverse.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,44 +80,44 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<TicketDTO> ticketMonthInYear(String year) {
+    public List<TicketSoldDTO> ticketMonthInYear(String year) {
         return reportRepository.ticketMonthInYear(year);
     }
 
     @Override
-    public List<TicketDTO> ticketMonthInYearAndMovie(String year, String movieId) {
+    public List<TicketSoldDTO> ticketMonthInYearAndMovie(String year, String movieId) {
         return reportRepository.ticketMonthInYearAndMovie(year,movieId);
     }
 
     @Override
-    public List<TicketDTO> ticketMonthInYearAndTheater(String year, String theaterId) {
+    public List<TicketSoldDTO> ticketMonthInYearAndTheater(String year, String theaterId) {
         return reportRepository.ticketMonthInYearAndTheater(year,theaterId);
     }
 
     @Override
-    public List<TicketDTO> ticketMonthInYearAndProvince(String year, String provinceId) {
+    public List<TicketSoldDTO> ticketMonthInYearAndProvince(String year, String provinceId) {
         return reportRepository.ticketMonthInYearAndProvince(year,provinceId);
     }
 
     @Override
-    public List<TicketDTO> ticketByPeriodTime(LocalDate startDate, LocalDate endDate) {
+    public List<TicketSoldDTO> ticketByPeriodTime(LocalDate startDate, LocalDate endDate) {
         return reportRepository.ticketByPeriodTime(startDate, endDate);
     }
 
     @Override
-    public List<TicketDTO> ticketByPeriodTimeAndMovie(LocalDate startDate, LocalDate endDate, String movieId) {
+    public List<TicketSoldDTO> ticketByPeriodTimeAndMovie(LocalDate startDate, LocalDate endDate, String movieId) {
         return reportRepository.ticketByPeriodTimeAndMovie(startDate, endDate,movieId);
 
     }
 
     @Override
-    public List<TicketDTO> ticketByPeriodTimeAndTheater(LocalDate startDate, LocalDate endDate, String theater) {
+    public List<TicketSoldDTO> ticketByPeriodTimeAndTheater(LocalDate startDate, LocalDate endDate, String theater) {
         return reportRepository.ticketByPeriodTimeAndTheater(startDate, endDate,theater);
 
     }
 
     @Override
-    public List<TicketDTO> ticketByPeriodTimeAndProvince(LocalDate startDate, LocalDate endDate, String province) {
+    public List<TicketSoldDTO> ticketByPeriodTimeAndProvince(LocalDate startDate, LocalDate endDate, String province) {
         return reportRepository.ticketByPeriodTimeAndProvince(startDate, endDate,province);
 
     }

@@ -44,7 +44,7 @@ public class Ticket {
     private Seat seat;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id")
+    @JoinColumn(name="booking_id")
     private Booking booking;
 
     public Ticket() {

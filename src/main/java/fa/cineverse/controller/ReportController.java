@@ -201,8 +201,8 @@ public class ReportController {
     public ResponseEntity<?> ticketMonthInYear(@RequestParam("year") String year) {
         int lastYear = Integer.parseInt(year) - 1;
         String lastYearString = Integer.toString(lastYear);
-        List<TicketDTO> scheduleList = reportService.ticketMonthInYear(year);
-        List<TicketDTO> schedulePeriodList = reportService.ticketMonthInYear(lastYearString);
+        List<TicketSoldDTO> scheduleList = reportService.ticketMonthInYear(year);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketMonthInYear(lastYearString);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -218,8 +218,8 @@ public class ReportController {
         int lastYear = Integer.parseInt(year) - 1;
         String lastYearString = Integer.toString(lastYear);
 
-        List<TicketDTO> scheduleList = reportService.ticketMonthInYearAndMovie(year, movieId);
-        List<TicketDTO> schedulePeriodList = reportService.ticketMonthInYearAndMovie(lastYearString, movieId);
+        List<TicketSoldDTO> scheduleList = reportService.ticketMonthInYearAndMovie(year, movieId);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketMonthInYearAndMovie(lastYearString, movieId);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -235,8 +235,8 @@ public class ReportController {
         int lastYear = Integer.parseInt(year) - 1;
         String lastYearString = Integer.toString(lastYear);
 
-        List<TicketDTO> scheduleList = reportService.ticketMonthInYearAndTheater(year, theaterId);
-        List<TicketDTO> schedulePeriodList = reportService.ticketMonthInYearAndTheater(lastYearString, theaterId);
+        List<TicketSoldDTO> scheduleList = reportService.ticketMonthInYearAndTheater(year, theaterId);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketMonthInYearAndTheater(lastYearString, theaterId);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -252,8 +252,8 @@ public class ReportController {
         int lastYear = Integer.parseInt(year) - 1;
         String lastYearString = Integer.toString(lastYear);
 
-        List<TicketDTO> scheduleList = reportService.ticketMonthInYearAndProvince(year, provinceId);
-        List<TicketDTO> schedulePeriodList = reportService.ticketMonthInYearAndProvince(lastYearString, provinceId);
+        List<TicketSoldDTO> scheduleList = reportService.ticketMonthInYearAndProvince(year, provinceId);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketMonthInYearAndProvince(lastYearString, provinceId);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -271,8 +271,8 @@ public class ReportController {
         LocalDate previousStartDate = startDate.minusDays(daysDifference);
         LocalDate previousEndDate = startDate.minusDays(1);
 
-        List<TicketDTO> scheduleList = reportService.ticketByPeriodTime(startDate, endDate);
-        List<TicketDTO> schedulePeriodList = reportService.ticketByPeriodTime(previousStartDate, previousEndDate);
+        List<TicketSoldDTO> scheduleList = reportService.ticketByPeriodTime(startDate, endDate);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketByPeriodTime(previousStartDate, previousEndDate);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -292,8 +292,8 @@ public class ReportController {
         LocalDate previousStartDate = startDate.minusDays(daysDifference);
         LocalDate previousEndDate = startDate.minusDays(1);
 
-        List<TicketDTO> scheduleList = reportService.ticketByPeriodTimeAndMovie(startDate, endDate, movieId);
-        List<TicketDTO> schedulePeriodList = reportService.ticketByPeriodTimeAndMovie(previousStartDate, previousEndDate, movieId);
+        List<TicketSoldDTO> scheduleList = reportService.ticketByPeriodTimeAndMovie(startDate, endDate, movieId);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketByPeriodTimeAndMovie(previousStartDate, previousEndDate, movieId);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -312,8 +312,8 @@ public class ReportController {
         LocalDate previousStartDate = startDate.minusDays(daysDifference);
         LocalDate previousEndDate = startDate.minusDays(1);
 
-        List<TicketDTO> scheduleList = reportService.ticketByPeriodTimeAndTheater(startDate, endDate, theaterId);
-        List<TicketDTO> schedulePeriodList = reportService.ticketByPeriodTimeAndTheater(previousStartDate, previousEndDate, theaterId);
+        List<TicketSoldDTO> scheduleList = reportService.ticketByPeriodTimeAndTheater(startDate, endDate, theaterId);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketByPeriodTimeAndTheater(previousStartDate, previousEndDate, theaterId);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }
@@ -332,8 +332,8 @@ public class ReportController {
         LocalDate previousStartDate = startDate.minusDays(daysDifference);
         LocalDate previousEndDate = startDate.minusDays(1);
 
-        List<TicketDTO> scheduleList = reportService.ticketByPeriodTimeAndProvince(startDate, endDate, provinceId);
-        List<TicketDTO> schedulePeriodList = reportService.ticketByPeriodTimeAndProvince(previousStartDate, previousEndDate, provinceId);
+        List<TicketSoldDTO> scheduleList = reportService.ticketByPeriodTimeAndProvince(startDate, endDate, provinceId);
+        List<TicketSoldDTO> schedulePeriodList = reportService.ticketByPeriodTimeAndProvince(previousStartDate, previousEndDate, provinceId);
         ListTicketResponse ticketResponseList = new ListTicketResponse(scheduleList, schedulePeriodList);
         return new ResponseEntity<>(ticketResponseList, HttpStatus.OK);
     }

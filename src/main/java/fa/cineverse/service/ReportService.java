@@ -1,9 +1,6 @@
 package fa.cineverse.service;
 
-import fa.cineverse.dto.RevenueDTO;
-import fa.cineverse.dto.TicketDTO;
-import fa.cineverse.dto.Top3MovieInMonth;
-import fa.cineverse.dto.Top5TheaterInMonth;
+import fa.cineverse.dto.*;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
@@ -28,21 +25,21 @@ public interface ReportService {
 
     List<RevenueDTO> revenueMonthInYearAndProvince(String year, String provinceId);
 
-    List<TicketDTO> ticketMonthInYear(@Param("year") String year);
+    List<TicketSoldDTO> ticketMonthInYear(@Param("year") String year);
 
-    List<TicketDTO> ticketMonthInYearAndMovie( String year,  String movieId);
+    List<TicketSoldDTO> ticketMonthInYearAndMovie( String year,  String movieId);
 
-    List<TicketDTO> ticketMonthInYearAndTheater(String year, String theaterId);
+    List<TicketSoldDTO> ticketMonthInYearAndTheater(String year, String theaterId);
 
-    List<TicketDTO> ticketMonthInYearAndProvince( String year,  String provinceId);
+    List<TicketSoldDTO> ticketMonthInYearAndProvince( String year,  String provinceId);
 
-    List<TicketDTO> ticketByPeriodTime(LocalDate startDate,  LocalDate endDate);
+    List<TicketSoldDTO> ticketByPeriodTime(LocalDate startDate,  LocalDate endDate);
 
-    List<TicketDTO> ticketByPeriodTimeAndMovie(LocalDate startDate,  LocalDate endDate, String movieId);
+    List<TicketSoldDTO> ticketByPeriodTimeAndMovie(LocalDate startDate,  LocalDate endDate, String movieId);
 
-    List<TicketDTO> ticketByPeriodTimeAndTheater( LocalDate startDate, LocalDate endDate,  String theater);
+    List<TicketSoldDTO> ticketByPeriodTimeAndTheater( LocalDate startDate, LocalDate endDate,  String theater);
 
-    List<TicketDTO> ticketByPeriodTimeAndProvince( LocalDate startDate,  LocalDate endDate,  String province);
+    List<TicketSoldDTO> ticketByPeriodTimeAndProvince( LocalDate startDate,  LocalDate endDate,  String province);
 
     List<Top3MovieInMonth> top3MovieInMonth( LocalDate month);
     List<Top5TheaterInMonth> top5TheaterInMonth(LocalDate month);

@@ -1,9 +1,6 @@
 package fa.cineverse.repository;
 
-import fa.cineverse.dto.RevenueDTO;
-import fa.cineverse.dto.TicketDTO;
-import fa.cineverse.dto.Top3MovieInMonth;
-import fa.cineverse.dto.Top5TheaterInMonth;
+import fa.cineverse.dto.*;
 import fa.cineverse.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -271,7 +268,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "      AND YEAR(b.created_at) = :year " +
             "    GROUP BY DATE_FORMAT(b.created_at, '%m') " +
             ") AS ticket_count ON months.month = ticket_count.booking_month;" , nativeQuery=true)
-    List<TicketDTO> ticketMonthInYear(@Param("year") String year);
+    List<TicketSoldDTO> ticketMonthInYear(@Param("year") String year);
 
     @Query(value="SELECT months.month AS time, COALESCE(ticket_count.count, 0) AS ticketCount " +
             "FROM ( " +
@@ -298,7 +295,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "      AND s.movie_id = :movieId " +
             "    GROUP BY DATE_FORMAT(b.created_at, '%m') " +
             ") AS ticket_count ON months.month = ticket_count.booking_month;", nativeQuery=true)
-    List<TicketDTO> ticketMonthInYearAndMovie(@Param("year") String year, @Param("movieId") String movieId);
+    List<TicketSoldDTO> ticketMonthInYearAndMovie(@Param("year") String year, @Param("movieId") String movieId);
 
     @Query(value="SELECT months.month AS time, COALESCE(ticket_count.count, 0) AS ticketCount " +
             "FROM ( " +
@@ -327,7 +324,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "      AND th.theater_id = :theaterId " +
             "    GROUP BY DATE_FORMAT(b.created_at, '%m') " +
             ") AS ticket_count ON months.month = ticket_count.booking_month;",nativeQuery=true)
-    List<TicketDTO> ticketMonthInYearAndTheater(@Param("year") String year, @Param("theaterId") String theaterId);
+    List<TicketSoldDTO> ticketMonthInYearAndTheater(@Param("year") String year, @Param("theaterId") String theaterId);
 
     @Query(value="SELECT months.month AS time, COALESCE(ticket_count.count, 0) AS ticketCount " +
             "FROM ( " +
@@ -357,7 +354,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "      AND p.province_id = :provinceId " +
             "    GROUP BY DATE_FORMAT(b.created_at, '%m') " +
             ") AS ticket_count ON months.month = ticket_count.booking_month;", nativeQuery= true)
-    List<TicketDTO> ticketMonthInYearAndProvince(@Param("year") String year, @Param("provinceId") String provinceId);
+    List<TicketSoldDTO> ticketMonthInYearAndProvince(@Param("year") String year, @Param("provinceId") String provinceId);
 
     @Query(value="SELECT calendar.date AS time, COALESCE(ticket_count.count, 0) AS ticketCount " +
             "FROM ( " +
@@ -382,7 +379,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "    GROUP BY DATE(b.created_at) " +
             ") AS ticket_count ON calendar.date = ticket_count.booking_date " +
             "ORDER BY calendar.date;", nativeQuery=true)
-    List<TicketDTO> ticketByPeriodTime(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<TicketSoldDTO> ticketByPeriodTime(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query(value="SELECT calendar.date AS time, COALESCE(ticket_count.count, 0) AS ticketCount  " +
             "FROM (  " +
@@ -408,7 +405,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "    GROUP BY DATE(b.created_at)  " +
             ") AS ticket_count ON calendar.date = ticket_count.booking_date  " +
             "ORDER BY calendar.date;",nativeQuery=true)
-    List<TicketDTO> ticketByPeriodTimeAndMovie(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("movieId") String movieId);
+    List<TicketSoldDTO> ticketByPeriodTimeAndMovie(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("movieId") String movieId);
 
     @Query(value="SELECT calendar.date AS time, COALESCE(ticket_count.count, 0) AS ticketCount  " +
             "FROM (  " +
@@ -436,7 +433,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "    GROUP BY DATE(b.created_at)  " +
             ") AS ticket_count ON calendar.date = ticket_count.booking_date  " +
             "ORDER BY calendar.date;", nativeQuery=true)
-    List<TicketDTO> ticketByPeriodTimeAndTheater(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("theaterId") String theater);
+    List<TicketSoldDTO> ticketByPeriodTimeAndTheater(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("theaterId") String theater);
 
     @Query(value="SELECT calendar.date AS time, COALESCE(ticket_count.count, 0) AS ticketCount  " +
             "FROM (  " +
@@ -465,7 +462,7 @@ public interface ReportRepository extends JpaRepository<Booking, String> {
             "    GROUP BY DATE(b.created_at)  " +
             ") AS ticket_count ON calendar.date = ticket_count.booking_date  " +
             "ORDER BY calendar.date;", nativeQuery=true)
-    List<TicketDTO> ticketByPeriodTimeAndProvince(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("provinceId") String province);
+    List<TicketSoldDTO> ticketByPeriodTimeAndProvince(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("provinceId") String province);
 
     @Query(value="SELECT s.movie_id as movieId, m.movie_name as movieName, m.image_url as imageUrl, mt.move_type_name as movieType, SUM(t.price) AS revenue  " +
             "FROM ticket t  " +
