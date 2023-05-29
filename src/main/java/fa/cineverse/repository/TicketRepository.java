@@ -9,5 +9,12 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, String> {
 
-    Ticket findTicketByScheduleScheduleIdAndSeat_SeatRoomId(ScheduleId scheduleId, String seatRoomId);
+    /**
+     * @Author: HuongNT106
+     * @Day: May 26, 2023 | @Time: 11:35:57 PM
+     * @Return: List<Ticket>
+     */
+    List<Ticket> findTicketByScheduleScheduleId(ScheduleId scheduleId);
+
+    List<Ticket> findTicketByBooking_BookingId(String booking_bookingId);
 }

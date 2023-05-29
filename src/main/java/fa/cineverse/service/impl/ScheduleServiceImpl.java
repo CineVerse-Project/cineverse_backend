@@ -18,59 +18,70 @@ import java.util.List;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
-	@Autowired
-	private ScheduleRepository scheduleRepository;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
-	@Autowired
-	private SeatRepository seatRepository;
+    @Autowired
+    private SeatRepository seatRepository;
 
-	@Autowired
-	private TicketRepository ticketRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
 
-	@Override
-	public Page<Schedule> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return scheduleRepository.findAll(pageable);
-	}
+    @Override
+    public Page<Schedule> findAll(Pageable pageable) {
+        return scheduleRepository.findAll(pageable);
+    }
 
-	@Override
-	public Schedule findById(ScheduleId scheduleId) {
-		return scheduleRepository.findById(scheduleId).orElse(null);
-	}
+    @Override
+    public Schedule findById(ScheduleId scheduleId) {
+        return scheduleRepository.findById(scheduleId).orElse(null);
+    }
 
-	@Override
-	public Schedule save(Schedule schedule) {
-		LocalDateTime nowDateTime = LocalDateTime.now();
-		schedule.setCreatedAt(nowDateTime);
+    @Override
+    public Schedule save(Schedule schedule) {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        schedule.setCreatedAt(nowDateTime);
 
-		String roomId = schedule.getScheduleId().getRoomId();
-		List<Seat> seatList = seatRepository.findAllByRoom_RoomId(roomId);
+        String roomId = schedule.getScheduleId().getRoomId();
+        List<Seat> seatList = seatRepository.findAllByRoom_RoomId(roomId);
 
-		Schedule scheduleSaved = scheduleRepository.save(schedule);
-		LocalDateTime now = LocalDateTime.now();
-		seatList.forEach(seat -> {
-			Ticket ticketCreate = new Ticket();
-			ticketCreate.setSchedule(scheduleSaved);
-			ticketCreate.setCreatedAt(now);
-			ticketCreate.setTicketId(seat.getSeatRoomId());
-			ticketRepository.save(ticketCreate);
-		});
-		return scheduleSaved;
-	}
+        Schedule scheduleSaved = scheduleRepository.save(schedule);
+        LocalDateTime now = LocalDateTime.now();
+        seatList.forEach(seat -> {
+            Ticket ticketCreate = new Ticket();
+            ticketCreate.setSchedule(scheduleSaved);
+            ticketCreate.setCreatedAt(now);
+            ticketCreate.setTicketId(seat.getSeatRoomId());
+            ticketRepository.save(ticketCreate);
+        });
+        return scheduleSaved;
+    }
 
-	@Override
-	public Schedule update(Schedule schedule) {
-		LocalDateTime nowDateTime = LocalDateTime.now();
-		schedule.setUpdatedAt(nowDateTime);
+    @Override
+    public Schedule update(Schedule schedule) {
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        schedule.setUpdatedAt(nowDateTime);
 
-		String roomId = schedule.getScheduleId().getRoomId();
+        String roomId = schedule.getScheduleId().getRoomId();
 
-		return scheduleRepository.save(schedule);
-	}
+        return scheduleRepository.save(schedule);
+    }
 
-	@Override
-	public void remove(LocalDateTime scheduleDateTime, String roomId) {
-		scheduleRepository.removeAndUpdate(scheduleDateTime,roomId);
-	}
+    @Override
+    public void remove(LocalDateTime scheduleDateTime, String roomId) {
+        scheduleRepository.removeAndUpdate(scheduleDateTime, roomId);
+    }
 
+    /**
+     * @Author: HuongNT106
+     * @Day: May 26, 2023 | @Time: 11:34:21 PM
+     * TODO
+     */
+    @Override
+    public List<Schedule> findScheduleByMovieAndScheduleAndProvince(String movieId, LocalDateTime scheduleDateTime, String provinceId) {
+        if ("".equals(provinceId)) {
+            return scheduleRepository.findScheduleByMovieAndSchedule(movieId, scheduleDateTime);
+        }
+        return scheduleRepository.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
+    }
 }

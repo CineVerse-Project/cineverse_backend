@@ -25,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -172,5 +173,22 @@ public class ScheduleController {
         Map<String, String> errors = new HashMap<>();
         errors.put("sheduleDateTime", errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * @Author: HuongNT106
+     * @Day: May 26, 2023 | @Time: 11:32:07 PM
+     * @Return: ResponseEntity<List<Schedule>>
+     */
+    @GetMapping("/movie")
+    public ResponseEntity<List<Schedule>> findScheduleByMovieAndScheduleAndProvince(@RequestParam String movieId,
+                                                 @RequestParam("scheduleDateTime")
+                                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime scheduleDateTime,
+                                                 @RequestParam("provinceId") String provinceId) {
+        List<Schedule> schedules = scheduleService.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
+        if (schedules.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 }
