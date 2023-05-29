@@ -29,6 +29,17 @@ public class TheaterController {
 	private TheaterService theaterService;
 
 	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:55:33 AM
+	 * @Return: ResponseEntity<Theater>
+	 */
+	@GetMapping("{id}")
+	public ResponseEntity<Theater> getTheaterById (@PathVariable("id") String id) {
+		Theater theater = theaterService.get(id);
+		return new ResponseEntity<>(theater, HttpStatus.OK);
+	}
+	
+	/**
 	 * @Author: DatNH20
 	 * @Day: May 22, 2023 | @Time: 3:37:37 AM
 	 * @Return: ResponseEntity<?>

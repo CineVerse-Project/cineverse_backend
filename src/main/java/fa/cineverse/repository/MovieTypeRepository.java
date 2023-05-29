@@ -1,5 +1,7 @@
 package fa.cineverse.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +30,14 @@ public interface MovieTypeRepository extends JpaRepository<MovieType, String> {
 	 * @Note: find movie type by name
 	 */
 	MovieType findByMoveTypeName(String movieTypeName);
+	
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:40:02 AM
+	 * @Return: List<MovieType> tìm movie chưa xóa
+	 */
+	@Transactional
+	@Modifying
+	@Query(value = "SELECT * FROM movie_type WHERE is_delete = false ", nativeQuery = true)
+	List<MovieType> findAllActiveList();
 }

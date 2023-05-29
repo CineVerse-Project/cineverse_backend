@@ -36,6 +36,17 @@ public class RoomController {
 	private RoomService roomService;
 
 	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:54:55 AM
+	 * @Return: ResponseEntity<Room>
+	 */
+	@GetMapping("{id}")
+	public ResponseEntity<Room> getRoomById (@PathVariable("id") String id) {
+		Room room = roomService.get(id);
+		return new ResponseEntity<>(room, HttpStatus.OK);
+	}
+	
+	/**
 	 * @Author: DatNH20
 	 * @Day: May 19, 2023 | @Time: 2:16:01 PM
 	 * @Return: ResponseEntity<?>
