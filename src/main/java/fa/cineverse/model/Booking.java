@@ -21,32 +21,32 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Booking {
 	@Id
 	@Column(columnDefinition = "VARCHAR(20)")
-    @GeneratedValue(generator = "prod-generator")
-    @GenericGenerator(name = "prod-generator",
-            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "BK"),
-            strategy = "fa.cineverse.common.IdentityCodeGenerator")
+	@GeneratedValue(generator = "prod-generator")
+	@GenericGenerator(name = "prod-generator",
+			parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "BK"),
+			strategy = "fa.cineverse.common.IdentityCodeGenerator")
 	private String bookingId;
-	
+
 	private int ticketTotal;
-	
+
 	private boolean isDelete;
-	
+
 	private LocalDateTime createdAt;
-	
+
 	private LocalDateTime updatedAt;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "customer_id") 
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
-	
+
 	@OneToOne(mappedBy = "booking")
 	private Payment payment;
-	
+
 	@OneToMany(mappedBy = "booking")
 	private List<Ticket> tickets;
 
 	private boolean paymentStatus;
-	
+
 	public Booking() {
 		super();
 	}

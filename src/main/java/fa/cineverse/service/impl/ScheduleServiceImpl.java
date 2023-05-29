@@ -28,6 +28,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     private TicketRepository ticketRepository;
 
+
     /**
      * @Author: AnP1
      * @Day: May 23, 2023 | @Time: 9:04:42 AM
@@ -41,15 +42,18 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @Author: AnP1
      * @Day: May 23, 2023 | @Time: 9:04:45 AM
     */
+
     @Override
     public Schedule findById(ScheduleId scheduleId) {
         return scheduleRepository.findById(scheduleId).orElse(null);
     }
 
+
     /**
      * @Author: AnP1
      * @Day: May 23, 2023 | @Time: 9:04:48 AM
     */
+
     @Override
     public Schedule save(Schedule schedule) {
         LocalDateTime nowDateTime = LocalDateTime.now();
@@ -60,6 +64,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         Schedule scheduleSaved = scheduleRepository.save(schedule);
         LocalDateTime now = LocalDateTime.now();
+
 
         Double price = Constant.TICKET_PRICE;
         seatList.forEach(seat -> {
@@ -90,8 +95,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     /**
      * @Author: AnP1
-     * @Day: May 23, 2023 | @Time: 9:04:52 AM
+     * @Day: May 23, 2023 | @Time: 9:04:55 AM
     */
+
     @Override
     public Schedule update(Schedule schedule) {
         LocalDateTime nowDateTime = LocalDateTime.now();
@@ -102,14 +108,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
-    /**
-     * @Author: AnP1
-     * @Day: May 23, 2023 | @Time: 9:04:55 AM
-    */
     @Override
     public void remove(LocalDateTime scheduleDateTime, String roomId) {
         scheduleRepository.removeAndUpdate(scheduleDateTime, roomId);
     }
+
 
     @Override
     public List<ScheduleCheckDTO> check(ScheduleDTO scheduleDTO, Movie movie) {
@@ -122,4 +125,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return list;
     }
 
+    /**
+     * @Author: HuongNT106
+     * @Day: May 26, 2023 | @Time: 11:34:21 PM
+     * TODO
+     */
+    @Override
+    public List<Schedule> findScheduleByMovieAndScheduleAndProvince(String movieId, LocalDateTime scheduleDateTime, String provinceId) {
+        if ("".equals(provinceId)) {
+            return scheduleRepository.findScheduleByMovieAndSchedule(movieId, scheduleDateTime);
+        }
+        return scheduleRepository.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
+    }
 }

@@ -1,5 +1,7 @@
 package fa.cineverse.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,5 +30,15 @@ public interface TheaterRepository extends JpaRepository<Theater, String> {
 	 * @Note: find theater by name
 	 */
 	Theater findByTheaterName(String theaterName);
+
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:45:10 AM
+	 * @Return: List<Theater> tìm theater chưa xóa
+	 */
+	@Transactional
+	@Modifying
+	@Query(value = "SELECT * FROM theater WHERE is_delete = false ", nativeQuery = true)
+	List<Theater> findAllActiveList();
 
 }

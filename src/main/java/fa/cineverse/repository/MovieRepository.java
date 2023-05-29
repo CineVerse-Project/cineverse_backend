@@ -93,4 +93,14 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
 	 * @Note: find by name
 	 */
 	Movie findByMovieName(String movieName);
+	
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:41:27 AM
+	 * @Return: List<Movie> tìm movie chưa xóa
+	 */
+	@Transactional
+	@Modifying
+	@Query(value = "SELECT * FROM movie WHERE is_delete = false ", nativeQuery = true)
+	List<Movie> findAllActiveList();
 }
