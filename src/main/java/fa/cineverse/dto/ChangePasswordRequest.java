@@ -14,7 +14,6 @@ import org.springframework.validation.Validator;
  * 
  */
 public class ChangePasswordRequest implements Validator {
-	private String username;
 	private String oldPassword;
 	private String newPassword;
 	private String confirmNewPassword;
@@ -23,21 +22,14 @@ public class ChangePasswordRequest implements Validator {
 		super();
 	}
 
-	public ChangePasswordRequest(String username, String oldPassword, String newPassword, String confirmNewPassword) {
+	public ChangePasswordRequest(String oldPassword, String newPassword, String confirmNewPassword) {
 		super();
-		this.username = username;
+
 		this.oldPassword = oldPassword;
 		this.newPassword = newPassword;
 		this.confirmNewPassword = confirmNewPassword;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
 	public String getOldPassword() {
 		return oldPassword;
@@ -68,12 +60,11 @@ public class ChangePasswordRequest implements Validator {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		ChangePasswordRequest changePasswordRequest = (ChangePasswordRequest) target;
 		
 	}
-
 }

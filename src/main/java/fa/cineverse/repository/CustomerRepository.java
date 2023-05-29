@@ -38,7 +38,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 					+ "inner join theater th on r.theater_id = th.theater_id\r\n"
 					+ "inner join payment p on b.booking_id = p.booking_id\r\n"
 					+ "where customer_id = :customerId group by b.booking_id",nativeQuery = true)
-	List listHistoryOrderByUsername(@Param("customerId") Integer customerId);
+	List<Object[]> listHistoryOrderByUsername(@Param("customerId") Integer customerId);
 	
 	
 	@Query(value = "select b.booking_id,b.created_at,\r\n"
@@ -65,5 +65,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 					+ "inner join theater th on r.theater_id = th.theater_id\r\n"
 					+ "inner join payment p on b.booking_id = p.booking_id\r\n"
 					+ "where customer_id = :customerId group by b.booking_id",nativeQuery = true)
-	List listEarnPointsByUsername(@Param("customerId") Integer customerId);
+	List<Object[]> listEarnPointsByUsername(@Param("customerId") Integer customerId);
 }
+

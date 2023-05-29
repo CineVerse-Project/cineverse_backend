@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import fa.cineverse.dto.CustomUserDetails;
 import fa.cineverse.model.User;
 import fa.cineverse.repository.UserRepository;
 
@@ -29,8 +28,10 @@ import fa.cineverse.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	public UserRepository userRepository;
-
+	public UserRepository userRepository;	
+	/**
+	 * @author HuuNQ
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
@@ -42,7 +43,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		user.getUserRole().forEach(
 				role -> authority.add(new SimpleGrantedAuthority(role.getRole().getRoleName()))
 				);
-		return new CustomUserDetails(user,authority);
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(),user.getPassword(),true,true,true,true,authority);
 	}
 
 }

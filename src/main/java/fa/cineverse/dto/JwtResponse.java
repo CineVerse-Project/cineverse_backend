@@ -6,10 +6,6 @@ package fa.cineverse.dto;
 
 import java.util.List;
 
-import org.springframework.security.core.GrantedAuthority;
-
-import fa.cineverse.model.Role;
-
 /**
  * @author HuuNQ
  *
