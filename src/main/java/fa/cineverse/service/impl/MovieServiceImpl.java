@@ -6,12 +6,6 @@ import fa.cineverse.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.List;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import fa.cineverse.model.Movie;
-import fa.cineverse.repository.MovieRepository;
 import fa.cineverse.service.MovieService;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +14,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
-
 
     @Override
     public Movie findById(String movieId) {

@@ -44,19 +44,23 @@ public class Booking {
 	
 	@OneToMany(mappedBy = "booking")
 	private List<Ticket> tickets;
+
+	private boolean paymentStatus;
 	
 	public Booking() {
 		super();
 	}
 
-	public Booking(String bookingId, int ticketTotal, boolean isDelete, LocalDateTime createdAt,
-			LocalDateTime updatedAt) {
-		super();
+	public Booking(String bookingId, int ticketTotal, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt, Customer customer, Payment payment, List<Ticket> tickets, boolean paymentStatus) {
 		this.bookingId = bookingId;
 		this.ticketTotal = ticketTotal;
 		this.isDelete = isDelete;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.customer = customer;
+		this.payment = payment;
+		this.tickets = tickets;
+		this.paymentStatus = paymentStatus;
 	}
 
 	public String getBookingId() {
@@ -114,6 +118,20 @@ public class Booking {
 	public void setPayment(Payment payment) {
 		this.payment = payment;
 	}
-	
-	
+
+	public List<Ticket> getTickets() {
+		return tickets;
+	}
+
+	public void setTickets(List<Ticket> tickets) {
+		this.tickets = tickets;
+	}
+
+	public boolean isPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(boolean paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 }

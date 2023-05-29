@@ -21,7 +21,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
  * @author HuuNQ
  *
  * 13 May 2023
- * 
+ *
  */
 @Component
 public class JwtCommon {

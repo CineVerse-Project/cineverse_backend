@@ -2,6 +2,9 @@ package fa.cineverse.service;
 
 
 
+import fa.cineverse.dto.ScheduleCheckDTO;
+import fa.cineverse.dto.ScheduleDTO;
+import fa.cineverse.model.Movie;
 import fa.cineverse.model.ScheduleId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,9 +12,10 @@ import org.springframework.data.domain.Pageable;
 import fa.cineverse.model.Schedule;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ScheduleService {
-    Page<Schedule> findAll(Pageable pageable);
+    Page<Schedule> findAll(Pageable pageable, String keyword);
 
     Schedule findById(ScheduleId scheduleId);
 
@@ -20,4 +24,7 @@ public interface ScheduleService {
     Schedule update(Schedule schedule);
 
     void remove(LocalDateTime scheduleDateTime, String roomId);
+
+    List<ScheduleCheckDTO> check(ScheduleDTO scheduleDTO, Movie movie);
+
 }

@@ -41,23 +41,23 @@ import fa.cineverse.common.JwtRequestFilter;
  * @author HuuNQ
  *
  * 12 May 2023
- * 
+ *
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
-	
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// TODO Auto-generated method stub
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -77,7 +77,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		//CORS để các host đều được truy cập
 		//CSRF được dùng để tránh các trường hợp bị tấn công csrf
 		http.cors().and().csrf().disable();
-		
+
 		http.authorizeHttpRequests(
 				(auth)->
 				{
@@ -122,9 +122,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 						}
 				});
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-		
+
 	}
-	
+
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 23 May 2023 | @Time: 08:23:36
@@ -135,7 +135,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-		
+
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 23 May 2023 | @Time: 08:21:26
@@ -153,17 +153,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 //	    mailSender.setHost("smtp.gmail.com");
 //	    mailSender.setPort(587);
-//	    
+//
 //	    mailSender.setUsername("cineverse.service@gmail.com");
 //	    mailSender.setPassword("java2301s");
-//	    
+//
 //	    Properties props = mailSender.getJavaMailProperties();
 //	    props.put("mail.transport.protocol", "smtp");
 //	    props.put("mail.smtp.auth", "true");
 //	    props.put("mail.smtp.starttls.enable", "true");
 //	    props.put("mail.debug", "true");
-//	    
+//
 //	    return mailSender;
 //	}
-	
+
 }
