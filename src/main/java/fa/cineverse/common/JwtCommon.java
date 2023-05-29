@@ -6,6 +6,8 @@ package fa.cineverse.common;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +41,7 @@ public class JwtCommon {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateJwtToken(String authToken){
+    public boolean validateJwtToken(String authToken,HttpServletRequest request){
         try{
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
             return true;
@@ -47,6 +49,7 @@ public class JwtCommon {
             System.out.println("Invalid JWT Token:"+e.getMessage());
         } catch (ExpiredJwtException e){
             System.out.println("JWT token is expired:"+e.getMessage());
+            request.setAttribute("expired",e.getMessage());
         } catch (UnsupportedJwtException e){
             System.out.println("JWT token is unsupported:"+e.getMessage());
         } catch (IllegalArgumentException e){

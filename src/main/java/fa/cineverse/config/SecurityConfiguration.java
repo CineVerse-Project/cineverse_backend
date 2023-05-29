@@ -105,7 +105,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			public void commence(HttpServletRequest request, HttpServletResponse response,
 					AuthenticationException authException) throws IOException, ServletException {
 				// TODO Auto-generated method stub
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: unauthorized");
+				final String expired = (String) request.getAttribute("expired");
+			    System.out.println(expired);
+			    if (expired!=null){
+			    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,expired);
+			    }else{
+			    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Invalid Login details");
+			    }
 			}
 		})
 		.and()

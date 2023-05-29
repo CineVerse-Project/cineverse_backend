@@ -269,7 +269,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token)) {
+		if (!jwtCommon.validateJwtToken(token,request)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -303,7 +303,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token)) {
+		if (!jwtCommon.validateJwtToken(token,request)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -343,7 +343,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token)) {
+		if (!jwtCommon.validateJwtToken(token,request)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -380,7 +380,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token)) {
+		if (!jwtCommon.validateJwtToken(token,request)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -412,7 +412,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token)) {
+		if (!jwtCommon.validateJwtToken(token,request)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
