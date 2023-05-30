@@ -23,27 +23,11 @@ public class TicketServiceImpl implements TicketService {
 	@Autowired
 	private BookingRepository bookingRepository;
 
-	/**
-	 * @Author: HuongNT106
-	 * @Day: May 19, 2023 | @Time: 9:56:08 AM
-	 * TODO
-	 */
-	/**
-	 * @Author: HuongNT106
-	 * @Day: May 26, 2023 | @Time: 11:34:33 PM
-	 * TODO
-	 */
 	@Override
 	public List<Ticket> findAll() {
-		// TODO Auto-generated method stub
 		return ticketRepository.findAll();
 	}
 
-	/**
-	 * @Author: HuongNT106
-	 * @Day: May 26, 2023 | @Time: 11:34:38 PM
-	 * TODO
-	 */
 	@Override
 	public List<Ticket> findTicketByScheduleScheduleId(ScheduleId scheduleId) {
 		return ticketRepository.findTicketByScheduleScheduleId(scheduleId);
@@ -56,7 +40,6 @@ public class TicketServiceImpl implements TicketService {
 
 	@Override
 	public void save(List<TicketDTO> ticketDTOList, String bookingId) {
-		LocalDateTime updateAt = LocalDateTime.now();
 		Booking booking = bookingRepository.findById(bookingId).orElse(null);
 		ticketDTOList.forEach(ticketDTO -> {
 			Ticket ticketUpdate = ticketRepository.findById(ticketDTO.getTicketId()).orElse(null);
@@ -64,23 +47,15 @@ public class TicketServiceImpl implements TicketService {
 				ticketUpdate.setBooking(booking);
 				if (booking != null){
 					ticketUpdate.setBooked(true);
-					ticketUpdate.setUpdatedAt(updateAt);
+					ticketUpdate.setUpdatedAt(LocalDateTime.now());
 				}
 				ticketRepository.save(ticketUpdate);
 			}
 		});
 	}
 
-	/**
-	 * @Author: HuongNT106
-	 * @Day: May 26, 2023 | @Time: 11:34:40 PM
-	 * TODO
-	 */
 	@Override
 	public Ticket findById(String id) {
 		return ticketRepository.findById(id).orElse(null);
 	}
-
-
-
 }
