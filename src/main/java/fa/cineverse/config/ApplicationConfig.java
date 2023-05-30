@@ -21,17 +21,37 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import fa.cineverse.model.User;
 import fa.cineverse.repository.UserRepository;
 
-
-
+/**
+* ApplicationConfig
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @Configuration
 public class ApplicationConfig {
     
     @Autowired
     private UserRepository userRepository;
     
+    /**
+     * userDetailsService
+     * @Author: HuuNQ
+     * @Day: 23 May 2023 | @Time: 08:23:36 TODO
+     * @return UserDetailsService
+     */
     @Bean
     public UserDetailsService userDetailsService() {
-	return new UserDetailsService() {
+    	return new UserDetailsService() {
 	    @Override
 	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
@@ -49,9 +69,10 @@ public class ApplicationConfig {
 	
     }
     /**
+     * passwordEncoder
      * @Author: HuuNQ
      * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-     * @Return: PasswordEncoder
+     * @return PasswordEncoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,10 +80,10 @@ public class ApplicationConfig {
     }
     
     /**
+     * authenticationProvider
      * @Author: HuuNQ
      * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-     * @param AuthenticationProvider
-     * @Return: no return
+     * @return AuthenticationProvider
      */
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -74,9 +95,10 @@ public class ApplicationConfig {
     }
     
     /**
+     * authenticationManager
      * @Author: HuuNQ
      * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-     * @Return: AuthenticationManager
+     * @return AuthenticationManager
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

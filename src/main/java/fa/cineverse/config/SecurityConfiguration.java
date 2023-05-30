@@ -31,11 +31,21 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import fa.cineverse.common.JwtRequestFilter;
 
 /**
- * @author HuuNQ
- *
- * 12 May 2023
- *
- */
+* SecurityConfiguration
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration{
@@ -47,9 +57,13 @@ public class SecurityConfiguration{
     private AuthenticationProvider authenticationProvider;
 
     /**
+     * securityFilterChain
+     * 
      * @Author: HuuNQ
      * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-     * @Return:
+     * @param http
+     * @return SecurityFilterChain
+     * @throws Exception
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -81,8 +95,9 @@ public class SecurityConfiguration{
     
     /**
      * @Author: HuuNQ
+     * @param resourceLoader 
      * @Day: 23 May 2023 | @Time: 08:21:26
-     * @Return: FreeMarkerConfigurationFactoryBean
+     * @return FreeMarkerConfigurationFactoryBean
      */
     @Bean(name = "emailConfigBean")
     @Primary
@@ -92,6 +107,10 @@ public class SecurityConfiguration{
 	return bean;
     }
 
+    /**
+     * persistentTokenRepository
+     * @return PersistentTokenRepository
+     */
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
 	return new InMemoryTokenRepositoryImpl();

@@ -15,13 +15,22 @@ import fa.cineverse.repository.RoleRepository;
 import fa.cineverse.repository.UserRepository;
 import fa.cineverse.repository.UserRoleRepository;
 import fa.cineverse.service.UserService;
-
 /**
- * @author HuuNQ
- *
- * 14 May 2023
- *
- */
+* UserServiceImpl
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -64,10 +73,7 @@ public class UserServiceImpl implements UserService{
 	public User findByUsername(String username) {
 		// TODO Auto-generated method stub
 		User user = userRepository.findByUsername(username);
-		if(user != null) {
-			return user;
-		}
-		return null;
+		return user;
 	}
 	/**
 	 * @author HuuNQ

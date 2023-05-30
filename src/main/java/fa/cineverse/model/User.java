@@ -52,10 +52,24 @@ public class User implements UserDetails{
 	@JoinColumn(name="username")
 	private Customer customer;
 	
+	/**
+	 * 
+	 */
 	public User() {
 		
 	}
 
+	/**
+	 * @param username
+	 * @param password
+	 * @param createdDate
+	 * @param updateAt
+	 * @param lastLogin
+	 * @param isDelete
+	 * @param resetPasswordToken
+	 * @param userRole
+	 * @param customer
+	 */
 	public User(String username, String password, LocalDateTime createdDate, LocalDateTime updateAt,
 			LocalDateTime lastLogin, boolean isDelete, String resetPasswordToken, List<UserRole> userRole,
 			Customer customer) {
@@ -75,6 +89,9 @@ public class User implements UserDetails{
 		return username;
 	}
 
+	/**
+	 * @param username
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -83,62 +100,107 @@ public class User implements UserDetails{
 		return password;
 	}
 
+	/**
+	 * @param password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * @return LocalDateTime
+	 */
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
+	/**
+	 * @param createdDate
+	 */
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
+	/**
+	 * @return
+	 */
 	public LocalDateTime getUpdateAt() {
 		return updateAt;
 	}
 
+	/**
+	 * @param updateAt
+	 */
 	public void setUpdateAt(LocalDateTime updateAt) {
 		this.updateAt = updateAt;
 	}
 
+	/**
+	 * @return
+	 */
 	public LocalDateTime getLastLogin() {
 		return lastLogin;
 	}
 
+	/**
+	 * @param lastLogin
+	 */
 	public void setLastLogin(LocalDateTime lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isDelete() {
 		return isDelete;
 	}
 
+	/**
+	 * @param isDelete
+	 */
 	public void setDelete(boolean isDelete) {
 		this.isDelete = isDelete;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getResetPasswordToken() {
 		return resetPasswordToken;
 	}
 
+	/**
+	 * @param resetPasswordToken
+	 */
 	public void setResetPasswordToken(String resetPasswordToken) {
 		this.resetPasswordToken = resetPasswordToken;
 	}
 
+	/**
+	 * @return
+	 */
 	public List<UserRole> getUserRole() {
 		return userRole;
 	}
 
+	/**
+	 * @param userRole
+	 */
 	public void setUserRole(List<UserRole> userRole) {
 		this.userRole = userRole;
 	}
 
+	/**
+	 * @return
+	 */
 	public Customer getCustomer() {
 		return customer;
 	}
 
+	/**
+	 * @param customer
+	 */
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}

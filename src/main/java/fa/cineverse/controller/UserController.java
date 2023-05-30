@@ -60,11 +60,21 @@ import freemarker.template.TemplateException;
 import net.bytebuddy.utility.RandomString;
 
 /**
- * @author HuuNQ
- *
- *         12 May 2023
- *
- */
+* UserController
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin("*")
@@ -89,9 +99,12 @@ public class UserController {
 	private PasswordEncoder passwordEncoder;
 
 	/**
+	 * userLoginRequest
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:17:05
-	 * @Return: ResponseEntity<?>
+	 * @param loginRequest 
+     * @param bindingResult 
+	 * @return ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/sign-in", method = RequestMethod.POST)
 	public ResponseEntity<?> userLoginRequest(@Valid @RequestBody LoginRequest loginRequest,
@@ -114,9 +127,12 @@ public class UserController {
 	}
 
 	/**
-	 * @Author: HuuNQ
-	 * @Day: 19 May 2023 | @Time: 14:17:02
-	 * @Return: ResponseEntity<?>
+	 * adminLoginRequest
+     * @Author: HuuNQ
+     * @Day: 19 May 2023 | @Time: 14:17:02
+	 * @param loginAdminRequest 
+	 * @param bindingResult 
+     * @return  ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/sign-in/admin", method = RequestMethod.POST)
 	public ResponseEntity<?> adminLoginRequest(@Valid @RequestBody LoginAdminRequest loginAdminRequest,
@@ -139,9 +155,12 @@ public class UserController {
 	}
 
 	/**
+	 * forgotPassword
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:55
-	 * @Return: ResponseEntity<?>
+	 * @param forgotPasswordRequest 
+     * @param bindingResult 
+	 * @return  ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
 	public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest,
@@ -185,11 +204,17 @@ public class UserController {
 
 	}
 
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 19 May 2023 | @Time: 14:16:51
-	 * @Return: ResponseEntity<?>
-	 */
+    /**
+     * resetPassword
+     * @Author: HuuNQ
+     * @Day: 19 May 2023 | @Time: 14:16:55
+     * @param forgotPasswordRequest 
+     * @param username
+     * @param token 
+     * @param resetPassword 
+     * @param result 
+     * @return  ResponseEntity<?>
+     */
 	@RequestMapping(value = "/reset-password", method = RequestMethod.POST)
 	public ResponseEntity<?> resetPassword(@RequestParam("username") Optional<String> username,
 			@RequestParam("reset-password-token") Optional<String> token,
@@ -225,13 +250,14 @@ public class UserController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	/**
-	 *
-	 * @Author: HuuNQ
-	 * @Day: 22 May 2023 | @Time: 08:54:08
-	 * @Return: ResponseEntity<?>
-	 */
-
+    /**
+     * resetPassword
+     * @Author: HuuNQ
+     * @Day: 19 May 2023 | @Time: 14:16:55
+     * @param userDTO 
+     * @param bindingResult 
+     * @return  ResponseEntity<?>
+     */
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
 		new UserDTO().validate(userDTO, bindingResult);
@@ -258,9 +284,12 @@ public class UserController {
 	}
 
 	/**
+     * information
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
+     * @param username 
+     * @param request 
+	 * @return ResponseEntity<?>
 	 */
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping("/user/{username}")
@@ -288,9 +317,13 @@ public class UserController {
 	}
 
 	/**
+	 * updateInformation
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
+	 * @param userDTO 
+     * @param bindingResult 
+     * @param request
+     * @return  ResponseEntity<?>
 	 */
 	@PatchMapping("/user/profile-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult,
@@ -328,9 +361,14 @@ public class UserController {
 	}
 
 	/**
+	 * changePassword
 	 * @Author: HuuNQ
 	 * @Day: 22 May 2023 | @Time: 08:42:06
-	 * @Return: ResponseEntity<?>
+	 * @param username 
+     * @param request 
+     * @param changePassword 
+     * @param bindingResult 
+     * @return  ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
 	public ResponseEntity<?> changePassword(@RequestParam("username") String username, HttpServletRequest request,
@@ -372,9 +410,12 @@ public class UserController {
 	}
 
 	/**
+	 * historyOrder
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
+	 * @param username 
+     * @param request 
+	 * @return ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username") String username, HttpServletRequest request) {
@@ -393,7 +434,9 @@ public class UserController {
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 23 May 2023 | @Time: 08:19:11
-	 * @Return: ResponseEntity<?>
+	 * @param username 
+     * @param request 
+	 * @return ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
 	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {

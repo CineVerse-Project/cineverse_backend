@@ -21,13 +21,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 /**
- * @author HuuNQ
- *
- *         13 May 2023
- *
- */
+* JwtRequestFilter
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -36,7 +45,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService customUserDetailsService;
-
+    
+    /**
+     * getTokenFromRequest
+     * @author HuuNQ
+     * @param request,response,filterChain
+     * @return no return
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 	    throws ServletException, IOException {
@@ -57,16 +72,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			}
 		}
 
-	filterChain.doFilter(request, response);
+		filterChain.doFilter(request, response);
 
     }
 
+    /**
+     * getTokenFromRequest
+     * @author HuuNQ
+     * @param request
+     * @return String || null
+     */
     public String getTokenFromRequest(HttpServletRequest request) {
-	String bearerToken = request.getHeader("Authorization");
-	if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-	    return bearerToken.substring(7, bearerToken.length());
-	}
-	return null;
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+            return null;
     }
 
 }
