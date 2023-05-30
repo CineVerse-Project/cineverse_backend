@@ -1,24 +1,38 @@
 package fa.cineverse.controller;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import fa.cineverse.dto.TicketDTO;
-import fa.cineverse.model.Customer;
-import fa.cineverse.model.Ticket;
-import fa.cineverse.service.CustomerService;
-import fa.cineverse.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import fa.cineverse.model.Booking;
+import fa.cineverse.model.Customer;
 import fa.cineverse.service.BookingService;
+import fa.cineverse.service.CustomerService;
 
+/**
+* BookingController
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023       HuongNT106          
+*
+*/
 @RestController
 @RequestMapping("/booking")
 public class BookingController {
@@ -29,13 +43,13 @@ public class BookingController {
     @Autowired
     private CustomerService customerService;
 
-    @Autowired
-    private TicketService ticketService;
-
     /**
+     * find all
+     * 
+     * @return: ResponseEntity<List<Booking>>
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:30:54 PM
-     * @Return: ResponseEntity<List<Booking>>
+     * @Day: May 30, 2023 | @Time: 11:20:55 AM
      */
     @GetMapping("")
     public ResponseEntity<List<Booking>> findAll() {
@@ -48,40 +62,29 @@ public class BookingController {
     }
 
     /**
+     * create booking
+     * @param: 
+     * @return: ResponseEntity<?>
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:31:01 PM
-     * @Return: ResponseEntity<?>
+     * @Day: May 30, 2023 | @Time: 11:21:59 AM
      */
     @PostMapping("")
     public ResponseEntity<?> createBooking() {
-//        Map<String, String> errorMap = new HashMap<>();
         Customer customer = customerService.findCustomerByUser("huonghuong");
         Booking booking = new Booking();
         booking.setCustomer(customer);
-//        ticketDTOList.forEach(ticketDTO -> {
-//            Ticket ticket = ticketService.findById(ticketDTO.getTicketId());
-//            if (ticket == null) {
-//                errorMap.put(ticketDTO.getTicketId(), "Ticket " + ticketDTO.getTicketId() + " is not exist");
-//            } else {
-//                if (ticket.isBooked()) {
-//                    errorMap.put(ticketDTO.getTicketId(), "Ticket " + ticketDTO.getTicketId() + " has been already booked");
-//                }
-//                if (ticket.getSchedule().getScheduleId().getSheduleDateTime().isBefore(LocalDateTime.now())){
-//                    errorMap.put(ticketDTO.getTicketId(), "The showtime will start shortly, please book ticket at the site you want to see the movie.");
-//                }
-//            }
-//        });
-//        if(!errorMap.isEmpty()){
-//            return new ResponseEntity<>(errorMap,HttpStatus.BAD_REQUEST);
-//        }
         Booking bookingSave = bookingService.save(booking);
         return new ResponseEntity<>(bookingSave, HttpStatus.OK);
     }
 
     /**
+     * change Payment Status
+     * @param: id
+     * @return: ResponseEntity<Booking>
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:31:30 PM
-     * @Return: ResponseEntity<Booking>
+     * @Day: May 30, 2023 | @Time: 11:22:04 AM
      */
     @PatchMapping(value = "/changePaymentStatus")
     public ResponseEntity<Booking> changePaymentStatus(@RequestParam("id") String id) {
@@ -93,6 +96,14 @@ public class BookingController {
         return new ResponseEntity<>(updateBooking, HttpStatus.OK);
     }
 
+    /**
+     * find Customer By Current User
+     * @param: 
+     * @return: ResponseEntity<Customer>
+     * @throws:
+     * @Author: HuongNT106
+     * @Day: May 30, 2023 | @Time: 11:22:42 AM
+     */
     @GetMapping("customer")
     public ResponseEntity<Customer> findCustomerByCurrentUser(){
         Customer customer = customerService.findCustomerByUser("huonghuong");
