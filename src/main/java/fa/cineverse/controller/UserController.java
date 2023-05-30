@@ -20,11 +20,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -64,6 +66,7 @@ import net.bytebuddy.utility.RandomString;
  *
  */
 @RestController
+@RequestMapping("/api/v1")
 @CrossOrigin("*")
 public class UserController {
 
@@ -100,11 +103,10 @@ public class UserController {
 			errors.forEach(x -> errorMap.put(x.getField(), x.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(errorMap);
 		}
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
-		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication
+		UserDetails user = (UserDetails) authentication
 				.getPrincipal();
 		List<String> userRoles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
@@ -129,7 +131,7 @@ public class UserController {
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				loginAdminRequest.getUsername(), loginAdminRequest.getPassword()));
 		String jwtGenerate = jwtCommon.generateToken(authentication);
-		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication
+		UserDetails user = (UserDetails) authentication
 				.getPrincipal();
 		List<String> userRoles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
@@ -260,6 +262,7 @@ public class UserController {
 	 * @Day: 19 May 2023 | @Time: 14:16:58
 	 * @Return: ResponseEntity<?>
 	 */
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username, HttpServletRequest request) {
 		// Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng
@@ -269,7 +272,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
+		if (!jwtCommon.validateJwtToken(token)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -303,7 +306,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
+		if (!jwtCommon.validateJwtToken(token)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -343,7 +346,7 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
+		if (!jwtCommon.validateJwtToken(token)) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
@@ -375,19 +378,6 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username") String username, HttpServletRequest request) {
-		String tokenString = request.getHeader("Authorization");
-		String token = null;
-		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
-			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		String usernameToken = jwtCommon.getUsernameFromToken(token);
-		if (!username.equals(usernameToken)) {
-			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-		}
-
 		User user = userService.findByUsername(username);
 
 		if (user != null) {
@@ -407,18 +397,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
 	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {
-		String tokenString = request.getHeader("Authorization");
-		String token = null;
-		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
-			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		String usernameToken = jwtCommon.getUsernameFromToken(token);
-		if (!username.equals(usernameToken)) {
-			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-		}
+
 		User user = userService.findByUsername(username);
 
 		if (user != null) {

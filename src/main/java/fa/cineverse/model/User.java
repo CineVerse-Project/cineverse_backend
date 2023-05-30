@@ -1,8 +1,10 @@
 package fa.cineverse.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,12 +16,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="user_tbl")
 @JsonIgnoreProperties({"customer","userRole"})
-public class User {
+public class User implements UserDetails{
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(columnDefinition = "NVARCHAR(255)")
 	private String username;
@@ -48,8 +56,6 @@ public class User {
 		
 	}
 
-	
-
 	public User(String username, String password, LocalDateTime createdDate, LocalDateTime updateAt,
 			LocalDateTime lastLogin, boolean isDelete, String resetPasswordToken, List<UserRole> userRole,
 			Customer customer) {
@@ -69,123 +75,102 @@ public class User {
 		return username;
 	}
 
-
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-
 
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-
-
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
-
-
 
 	public LocalDateTime getUpdateAt() {
 		return updateAt;
 	}
 
-
-
 	public void setUpdateAt(LocalDateTime updateAt) {
 		this.updateAt = updateAt;
 	}
-
-
 
 	public LocalDateTime getLastLogin() {
 		return lastLogin;
 	}
 
-
-
 	public void setLastLogin(LocalDateTime lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-
-
 
 	public boolean isDelete() {
 		return isDelete;
 	}
 
-
-
 	public void setDelete(boolean isDelete) {
 		this.isDelete = isDelete;
 	}
-
-
 
 	public String getResetPasswordToken() {
 		return resetPasswordToken;
 	}
 
-
-
 	public void setResetPasswordToken(String resetPasswordToken) {
 		this.resetPasswordToken = resetPasswordToken;
 	}
-
-
 
 	public List<UserRole> getUserRole() {
 		return userRole;
 	}
 
-
-
 	public void setUserRole(List<UserRole> userRole) {
 		this.userRole = userRole;
 	}
-
-
 
 	public Customer getCustomer() {
 		return customer;
 	}
 
-
-
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 
-
-
 	@Override
-	public int hashCode() {
-		return Objects.hash(username);
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return getUserRole().stream().map(x-> new SimpleGrantedAuthority(x.getRole().getRoleName())).collect(Collectors.toList());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!(obj instanceof User))
-			return false;
-		User other = (User) obj;
-		return Objects.equals(username, other.username);
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 
