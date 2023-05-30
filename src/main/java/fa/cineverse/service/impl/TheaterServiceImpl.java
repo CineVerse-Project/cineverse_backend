@@ -33,7 +33,7 @@ public class TheaterServiceImpl implements TheaterService {
 	 */
 	@Override
 	public List<Theater> listAll() {
-		return (List<Theater>) theaterRepository.findAll();
+		return (List<Theater>) theaterRepository.findAllActiveList();
 	}
 
 	/**
