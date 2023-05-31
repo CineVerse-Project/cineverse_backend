@@ -198,9 +198,15 @@ public class ScheduleController {
     }
 
     /**
+     * find schedule by movie and schedule and province
+     * 
+     * @param: movieId
+     * @param: scheduleDateTime
+     * @param: provinceId
+     * @return: ResponseEntity<List<Schedule>>
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:32:07 PM
-     * @Return: ResponseEntity<List < Schedule>>
+     * @Day: May 30, 2023 | @Time: 11:29:09 AM
      */
     @GetMapping("/movie")
     public ResponseEntity<List<Schedule>> findScheduleByMovieAndScheduleAndProvince(@RequestParam String movieId,
@@ -208,7 +214,7 @@ public class ScheduleController {
                                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime scheduleDateTime,
                                                                                     @RequestParam("provinceId") String provinceId) {
         List<Schedule> schedules = scheduleService.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
-        if (schedules.size() == 0) {
+        if (schedules.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(schedules, HttpStatus.OK);

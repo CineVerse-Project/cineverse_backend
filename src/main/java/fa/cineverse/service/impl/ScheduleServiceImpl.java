@@ -151,15 +151,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         String roomId = scheduleDTO.getScheduleId().getRoomId();
         return scheduleRepository.checkSchedule(startDateTime, endDateTime, roomId);
     }
-
+    
     /**
+     * find schedule by movie and schedule and province
+     * @param: movieId
+     * @param: scheduleDateTime
+     * @param: provinceId
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:34:21 PM
-     * TODO
+     * @Day: May 30, 2023 | @Time: 11:32:55 AM
      */
     @Override
     public List<Schedule> findScheduleByMovieAndScheduleAndProvince(String movieId, LocalDateTime scheduleDateTime, String provinceId) {
-        if ("".equals(provinceId)) {
+        if (provinceId.isEmpty()) {
             return scheduleRepository.findScheduleByMovieAndSchedule(movieId, scheduleDateTime);
         }
         return scheduleRepository.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);

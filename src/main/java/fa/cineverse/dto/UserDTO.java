@@ -11,14 +11,22 @@ import org.springframework.validation.Validator;
 
 import fa.cineverse.model.Customer;
 
-
-
 /**
- * @author HuuNQ
- *
- * 14 May 2023
- * 
- */
+* UserDTO
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 public class UserDTO implements Validator{
 	private String customerId;
 	private String fullName;

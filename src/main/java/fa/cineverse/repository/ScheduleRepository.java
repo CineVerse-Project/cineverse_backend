@@ -51,10 +51,16 @@ public interface ScheduleRepository extends JpaRepository<Schedule, ScheduleId> 
 
     List<Schedule> findScheduleByMovie_MovieId(String movieId);
 
+
     /**
+     * find schedule by movie and schedule and province
+     * @param: movieId
+     * @param: scheduleDateTime
+     * @param: provinceId
+     * @return: List<Schedule>
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:36:17 PM
-     * @Return: List<Schedule>
+     * @Day: May 30, 2023 | @Time: 11:35:33 AM
      */
     @Query(value = "select *\n" +
             "from schedule s\n" +
@@ -70,9 +76,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, ScheduleId> 
                                                              @Param("provinceId") String provinceId);
 
     /**
+     * find schedule by movie and schedule
+     * @param: movieId
+     * @param: scheduleDateTime
+     * @return: List<Schedule>
+     * @throws:
      * @Author: HuongNT106
-     * @Day: May 26, 2023 | @Time: 11:36:21 PM
-     * @Return: List<Schedule>
+     * @Day: May 30, 2023 | @Time: 11:34:53 AM
      */
     @Query(value = "select *\n" +
             "from schedule s\n" +

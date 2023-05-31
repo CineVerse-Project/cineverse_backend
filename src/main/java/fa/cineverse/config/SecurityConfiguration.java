@@ -15,131 +15,102 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import fa.cineverse.common.JwtRequestFilter;
 
 /**
- * @author HuuNQ
- *
- * 12 May 2023
- *
- */
+* SecurityConfiguration
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	@Autowired
-	private UserDetailsService userDetailsService;
+@EnableMethodSecurity(prePostEnabled = true,securedEnabled =  true)
+public class SecurityConfiguration{
 
-	@Autowired
-	private JwtRequestFilter jwtRequestFilter;
-
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-	 * @Return:
-	 */
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO Auto-generated method stub
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+    
+    @Autowired
+    private AuthenticationProvider authenticationProvider;
 
 
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-	 * @Return: AuthenticationManager
-	 */
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		// TODO Auto-generated method stub
-		return super.authenticationManagerBean();
-	}
-
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-	 * @Return:
-	 */
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		// TODO Auto-generated method stub
-		web.ignoring().antMatchers("/resources/**");
-	}
-
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-	 * @Return:
-	 */
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// TODO Auto-generated method stub
-		// CORS để các host đều được truy cập
-		// CSRF được dùng để tránh các trường hợp bị tấn công csrf
-		http.csrf().disable();
-		http.cors();
-		http.authorizeRequests().anyRequest().permitAll();
-//
-//		http.authorizeRequests().antMatchers("/api/v1/sign-in/admin", "/api/v1/sign-in", "/api/v1/sign-up",
-//				"/api/v1/reset-password", "/api/v1/forgot-password").permitAll();
-//		// Request dành cho role user
-//		http.authorizeRequests().antMatchers("/api/v1/user/**").hasAuthority("ROLE_USER");
-//		// Request dành cho role admin
-//		http.authorizeRequests().antMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN");
-		http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
-			@Override
-			public void commence(HttpServletRequest request, HttpServletResponse response,
-					AuthenticationException authException) throws IOException, ServletException {
-				// TODO Auto-generated method stub
-				final String expired = (String) request.getAttribute("expired");
-			    System.out.println(expired);
-			    if (expired!=null){
-			    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,expired);
-			    }else{
-			    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Invalid Login details");
-			    }
-			}
-		})
-		.and()
-		.httpBasic();
-//		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-	}
-
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 23 May 2023 | @Time: 08:23:36 TODO
-	 * @Return: PasswordEncoder
-	 */
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 23 May 2023 | @Time: 08:21:26
-	 * @Return: FreeMarkerConfigurationFactoryBean
-	 */
-	@Bean(name = "emailConfigBean")
-	@Primary
+    /**
+     * securityFilterChain
+     * 
+     * @Author: HuuNQ
+     * @Day: 23 May 2023 | @Time: 08:23:36 TODO
+     * @param http
+     * @return SecurityFilterChain
+     * @throws Exception
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	http.cors().and().csrf().disable().
+	sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	.and()
+	.authenticationProvider(authenticationProvider)
+	.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+	.authorizeHttpRequests()
+	.antMatchers("/**").permitAll()
+			.anyRequest().authenticated()
+			.and()
+			.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
+        			@Override
+        			public void commence(HttpServletRequest request, HttpServletResponse response,
+        					AuthenticationException authException) throws IOException, ServletException {
+        				// TODO Auto-generated method stub
+        			    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage());
+        			}
+        		});
+			
+	return http.build();
+    }
+    
+    /**
+     * @Author: HuuNQ
+     * @param resourceLoader 
+     * @Day: 23 May 2023 | @Time: 08:21:26
+     * @return FreeMarkerConfigurationFactoryBean
+     */
+    @Bean(name = "emailConfigBean")
+    @Primary
     public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration(ResourceLoader resourceLoader) {
-        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
-        bean.setTemplateLoaderPath("classpath:/templates/");
-        return bean;
+	FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
+	bean.setTemplateLoaderPath("classpath:/templates/");
+	return bean;
+    }
+
+    /**
+     * persistentTokenRepository
+     * @return PersistentTokenRepository
+     */
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+	return new InMemoryTokenRepositoryImpl();
     }
 }
