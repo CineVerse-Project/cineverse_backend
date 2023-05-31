@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,7 +77,6 @@ import net.bytebuddy.utility.RandomString;
 *
 */
 @RestController
-@RequestMapping("/api/v1")
 @CrossOrigin("*")
 public class UserController {
 
@@ -291,7 +291,7 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@Secured({"ROLE_USER"})
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username, HttpServletRequest request) {
 		// Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng
@@ -300,9 +300,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if (!username.equals(usernameToken)) {
@@ -325,6 +322,7 @@ public class UserController {
      * @param request
      * @return  ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@PatchMapping("/user/profile-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult,
 			HttpServletRequest request) {
@@ -338,9 +336,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if (!userDTO.getUsername().equals(usernameToken)) {
@@ -370,6 +365,7 @@ public class UserController {
      * @param bindingResult 
      * @return  ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
 	public ResponseEntity<?> changePassword(@RequestParam("username") String username, HttpServletRequest request,
 			@Valid @RequestBody ChangePasswordRequest changePassword, BindingResult bindingResult) {
@@ -383,9 +379,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 
@@ -417,16 +410,17 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username") String username, HttpServletRequest request) {
-		User user = userService.findByUsername(username);
-
+		
+	    User user = userService.findByUsername(username);
+	    
 		if (user != null) {
 			Customer customer = customerService.findByUser(user);
 			List<Object[]> historyOrder = customerService.allHistoryOrderByCustomer(customer);
 			return ResponseEntity.ok().body(historyOrder);
 		}
-
 		return ResponseEntity.badRequest().build();
 
 	}
@@ -438,6 +432,7 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
 	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {
 

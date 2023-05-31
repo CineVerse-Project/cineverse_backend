@@ -15,7 +15,6 @@ import fa.cineverse.model.Movie;
 import fa.cineverse.service.MovieService;
 
 @RestController
-@RequestMapping("")
 public class HomeController {
 
 	@Autowired
