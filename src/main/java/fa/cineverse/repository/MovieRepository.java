@@ -54,16 +54,18 @@ public interface MovieRepository extends JpaRepository<Movie, String> {
 				 + "where status = 0 ", nativeQuery = true)
 	List<Movie> findAllMoviePremiered();	
 	
+	
 	/**
 	 * @Author: TriLT6 | @User: TRUNG TRI
-	 * @Day: May 19, 2023 | @Time: 9:01:47 AM
+	 * @Day: May 26, 2023 | @Time: 6:38:28 PM
 	 * @Package: fa.cineverse.repository
 	 * @FileName: MovieRepository.java
-	 * @MethodsName: findTopMovieIsShowing
-	 * @Return: List<String>
-	 * @Note: Top 10 phim DANG cong chieu co so luong ve ban ra nhieu nhat 
+	 * @MethodsName: findTop10MovieIsShowing
+	 * @Return: List<MovieTop10DTO>
+	 * @Note: Tim kiem top 10 phim dang cong chieu
 	 */
 	@Query(value = "select count(ticket.ticket_id) as quantity, "
+			     + "movie.movie_id as movieId, "
 				 + "movie.movie_name as movieName, "
 				 + "movie.image_url as imageUrl "
 				 + "from movie "
