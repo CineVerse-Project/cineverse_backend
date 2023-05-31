@@ -93,13 +93,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		// CSRF được dùng để tránh các trường hợp bị tấn công csrf
 		http.csrf().disable();
 		http.cors();
-
-		http.authorizeRequests().antMatchers("/api/v1/sign-in/admin", "/api/v1/sign-in", "/api/v1/sign-up",
-				"/api/v1/reset-password", "/api/v1/forgot-password").permitAll();
-		// Request dành cho role user
-		http.authorizeRequests().antMatchers("/api/v1/user/**").hasAuthority("ROLE_USER");
-		// Request dành cho role admin
-		http.authorizeRequests().antMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN");
+		http.authorizeRequests().anyRequest().permitAll();
+//
+//		http.authorizeRequests().antMatchers("/api/v1/sign-in/admin", "/api/v1/sign-in", "/api/v1/sign-up",
+//				"/api/v1/reset-password", "/api/v1/forgot-password").permitAll();
+//		// Request dành cho role user
+//		http.authorizeRequests().antMatchers("/api/v1/user/**").hasAuthority("ROLE_USER");
+//		// Request dành cho role admin
+//		http.authorizeRequests().antMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN");
 		http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
 			@Override
 			public void commence(HttpServletRequest request, HttpServletResponse response,
@@ -116,7 +117,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		})
 		.and()
 		.httpBasic();
-		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
 	/**
