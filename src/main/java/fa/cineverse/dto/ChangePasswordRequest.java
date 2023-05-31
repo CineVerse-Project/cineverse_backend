@@ -8,11 +8,21 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
- * @author HuuNQ
- *
- *         19 May 2023
- * 
- */
+* ChangePasswordRequest
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 public class ChangePasswordRequest implements Validator {
 	private String oldPassword;
 	private String newPassword;
