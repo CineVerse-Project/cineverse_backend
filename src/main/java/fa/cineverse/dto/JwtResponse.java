@@ -6,22 +6,28 @@ package fa.cineverse.dto;
 
 import java.util.List;
 
-import org.springframework.security.core.GrantedAuthority;
-
-import fa.cineverse.model.Role;
-
 /**
- * @author HuuNQ
- *
- * 12 May 2023
- * 
- */
+* JwtResponse
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 public class JwtResponse {
 	private String type = "Bearer";
 	private String token;
 	private String username;
 	private List<String> roles;
-	
+
 	public JwtResponse() {
 		super();
 	}

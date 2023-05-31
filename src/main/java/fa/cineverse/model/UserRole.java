@@ -29,9 +29,8 @@ public class UserRole {
 		super();
 	}
 
-	public UserRole(int userRoleId, User user, Role role) {
+	public UserRole( User user, Role role) {
 		super();
-		this.userRoleId = userRoleId;
 		this.user = user;
 		this.role = role;
 	}

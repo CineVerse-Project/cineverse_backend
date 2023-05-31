@@ -6,53 +6,87 @@ package fa.cineverse.common;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import fa.cineverse.dto.CustomUserDetails;
-import fa.cineverse.model.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author HuuNQ
- *
- * 13 May 2023
- * 
- */
+* JwtCommon
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
+@Slf4j
 @Component
 public class JwtCommon {
-	private final String secretKey = "cineverse";
-    private final Integer expiredTokenMs = 360_000;
-
+    private static final Logger LOG = LoggerFactory.getLogger(JwtCommon.class);
+	private final String SECRECT_KEY = "cineverse";
+    private final Integer EXPIRED_TOKEN_MS = 600_000;
+    
+    /**
+     * generateToken
+     * @param authentication
+     * @return String
+     */
     public String generateToken(Authentication authentication){
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+    	UserDetails user =  (UserDetails) authentication.getPrincipal();
         return Jwts.builder().setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+expiredTokenMs))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .setExpiration(new Date(new Date().getTime()+EXPIRED_TOKEN_MS))
+                .signWith(SignatureAlgorithm.HS512, SECRECT_KEY)
                 .compact();
     }
 
+    /**
+     * getUsernameFromToken
+     * @param token
+     * @return String
+     */
     public String getUsernameFromToken(String token){
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    	Claims claims = Jwts.parser()
+    			.setSigningKey(SECRECT_KEY)
+    			.parseClaimsJws(token)
+    			.getBody();
+        return claims.getSubject();
     }
 
+    /**
+     * validateJwtToken
+     * @param authToken
+     * @return boolean
+     */
     public boolean validateJwtToken(String authToken){
         try{
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(SECRECT_KEY).parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException e){
-            System.out.println("Invalid JWT Token:"+e.getMessage());
+        	LOG.error("Invalid JWT Token:"+e.getMessage());
         } catch (ExpiredJwtException e){
-            System.out.println("JWT token is expired:"+e.getMessage());
+            LOG.error("JWT token is expired:"+e.getMessage());
         } catch (UnsupportedJwtException e){
-            System.out.println("JWT token is unsupported:"+e.getMessage());
+            LOG.error("JWT token is unsupported:"+e.getMessage());
         } catch (IllegalArgumentException e){
-            System.out.println("JWT claims string is empty::"+e.getMessage());
+            LOG.error("JWT claims string is empty::"+e.getMessage());
         }
         return false;
     }

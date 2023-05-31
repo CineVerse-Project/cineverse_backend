@@ -38,4 +38,14 @@ public interface RoomRepository extends JpaRepository<Room, String> {
 	 * @Note: find room by theater
 	 */
 	List<Room> findByTheater(Theater theater);
+	
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:42:53 AM
+	 * @Return: List<Room>tìm room chưa xóa
+	 */
+	@Transactional
+	@Modifying
+	@Query(value = "SELECT * FROM room WHERE is_delete = false ", nativeQuery = true)
+	List<Room> findAllActiveList();
 }

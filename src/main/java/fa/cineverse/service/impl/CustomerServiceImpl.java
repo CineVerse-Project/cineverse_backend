@@ -10,11 +10,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author HuuNQ
+ *
+ */
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+	/**
+	 * @author HuuNQ
+	 *
+	 */
     @Autowired
     private CustomerRepository customerRepository;
+    
     @Override
     public Customer findCustomerByUser(String username) {
         return customerRepository.findByUser_Username(username);
@@ -25,23 +34,31 @@ public class CustomerServiceImpl implements CustomerService {
 		// TODO Auto-generated method stub
 		customerRepository.save(customer);
 	}
-
-
-
+	
+	/**
+	 * @author HuuNQ
+	 *
+	 */
 	@Override
 	public void updateCustomer(Customer customer) {
 		// TODO Auto-generated method stub
 		customerRepository.save(customer);
 	}
-
+	/**
+	 * @author HuuNQ
+	 *
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object[]> allHistoryOrderByCustomer(Customer customer) {
 		// TODO Auto-generated method stub
 		return customerRepository.listHistoryOrderByUsername(customer.getCustomerId());
 	}
 
-
-
+	/**
+	 * @author HuuNQ
+	 *
+	 */
 	@Override
 	public Customer findByUser(User user) {
 		// TODO Auto-generated method stub

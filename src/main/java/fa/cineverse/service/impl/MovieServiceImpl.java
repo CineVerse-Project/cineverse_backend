@@ -22,8 +22,9 @@ import fa.cineverse.service.MovieService;
  *
  * Modification Log:
  *
- * DATE AUTHOR DESCRIPTION ----------------------------------------- May 30,
- * 2023 TriLT6
+ * DATE AUTHOR DESCRIPTION 
+ * ----------------------------------------- 
+ * May 30,2023 TriLT6
  *
  */
 @Service
@@ -129,16 +130,17 @@ public class MovieServiceImpl implements MovieService {
 
   }
 
-  /**
-   * @Author: DatNH20
-   * @Day: May 23, 2023 | @Time: 10:25:04 AM
-   * @Return: list All
-   */
-  @Override
-  public List<Movie> listAll() {
-    // TODO Auto-generated method stub
-    return (List<Movie>) movieRepository.findAll();
-  }
+
+	/**
+	 * @Author: DatNH20
+	 * @Day: May 23, 2023 | @Time: 10:25:04 AM
+	 * @Return: list All
+	 */
+	@Override
+	public List<Movie> listAll() {
+		// TODO Auto-generated method stub
+		return (List<Movie>) movieRepository.findAllActiveList();
+	}
 
   /**
    * @Author: DatNH20
@@ -188,14 +190,14 @@ public class MovieServiceImpl implements MovieService {
     return movieRepository.save(movie);
   }
 
-  /**
-   * @Author: DatNH20
-   * @Day: May 23, 2023 | @Time: 10:25:04 AM
-   * @Return: find by movie name
-   */
-  @Override
-  public Movie findByMovieName(String movieName) {
-    // TODO Auto-generated method stub
-    return movieRepository.findByMovieName(movieName);
-  }
+	/**
+	 * @Author: DatNH20
+	 * @Day: May 23, 2023 | @Time: 10:25:04 AM
+	 * @Return: find by movie name
+	 */
+	@Override
+	public Movie findByMovieName(String movieName) {
+		// TODO Auto-generated method stub
+		return movieRepository.findByMovieName(movieName);
+	}
 }

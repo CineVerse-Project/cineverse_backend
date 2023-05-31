@@ -14,125 +14,125 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class Ticket {
-	@Id
-	@Column(columnDefinition = "VARCHAR(20)")
+    @Id
+    @Column(columnDefinition = "VARCHAR(20)")
     @GeneratedValue(generator = "prod-generator")
     @GenericGenerator(name = "prod-generator",
             parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "TK"),
             strategy = "fa.cineverse.common.IdentityCodeGenerator")
-	private String ticketId;
+    private String ticketId;
 
-	private boolean booked;
+    private boolean booked;
 
-	private Double price;
+    private Double price;
 
-	private boolean isDelete;
-	
-	private LocalDateTime createdAt;
-	
-	private LocalDateTime updatedAt;
-	 
-	@ManyToOne
-	@JoinColumns(value = {  
-			@JoinColumn(name = "room_id"),
-			@JoinColumn(name = "schedule_date_time")
-	})
-	private Schedule schedule;
-	
-	@ManyToOne
-	@JoinColumn(name = "seat_id")
-	private Seat seat;
+    private boolean isDelete;
 
-	@ManyToOne
-	@JoinColumn(name="booking_id")
-	private Booking booking;
+    private LocalDateTime createdAt;
 
-	public Ticket() {
-		super();
-	}
+    private LocalDateTime updatedAt;
 
-	public Ticket(String ticketId, boolean booked, Double price, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt, Schedule schedule, Seat seat, Booking booking) {
-		this.ticketId = ticketId;
-		this.booked = booked;
-		this.price = price;
-		this.isDelete = isDelete;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.schedule = schedule;
-		this.seat = seat;
-		this.booking = booking;
-	}
+    @ManyToOne
+    @JoinColumns(value = {
+            @JoinColumn(name = "room_id"),
+            @JoinColumn(name = "schedule_date_time")
+    })
+    private Schedule schedule;
 
-	public String getTicketId() {
-		return ticketId;
-	}
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
 
-	public void setTicketId(String ticketId) {
-		this.ticketId = ticketId;
-	}
+    @ManyToOne
+    @JoinColumn(name="booking_id")
+    private Booking booking;
 
-	public boolean isDelete() {
-		return isDelete;
-	}
+    public Ticket() {
+        super();
+    }
 
-	public void setDelete(boolean isDelete) {
-		this.isDelete = isDelete;
-	}
+    public Ticket(String ticketId, boolean booked, Double price, boolean isDelete, LocalDateTime createdAt, LocalDateTime updatedAt, Schedule schedule, Seat seat, Booking booking) {
+        this.ticketId = ticketId;
+        this.booked = booked;
+        this.price = price;
+        this.isDelete = isDelete;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.schedule = schedule;
+        this.seat = seat;
+        this.booking = booking;
+    }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    public String getTicketId() {
+        return ticketId;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setTicketId(String ticketId) {
+        this.ticketId = ticketId;
+    }
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
+    public boolean isDelete() {
+        return isDelete;
+    }
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+    public void setDelete(boolean isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
 
-	public Seat getSeat() {
-		return seat;
-	}
+    public Seat getSeat() {
+        return seat;
+    }
 
-	public void setSeat(Seat seat) {
-		this.seat = seat;
-	}
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
 
-	public Schedule getSchedule() {
-		return schedule;
-	}
+    public Schedule getSchedule() {
+        return schedule;
+    }
 
-	public void setSchedule(Schedule schedule) {
-		this.schedule = schedule;
-	}
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
 
-	public Booking getBooking() {
-		return booking;
-	}
+    public Booking getBooking() {
+        return booking;
+    }
 
-	public void setBooking(Booking booking) {
-		this.booking = booking;
-	}
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
 
-	public boolean isBooked() {
-		return booked;
-	}
+    public boolean isBooked() {
+        return booked;
+    }
 
-	public void setBooked(boolean booked) {
-		this.booked = booked;
-	}
+    public void setBooked(boolean booked) {
+        this.booked = booked;
+    }
 
-	public Double getPrice() {
-		return price;
-	}
+    public Double getPrice() {
+        return price;
+    }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 }

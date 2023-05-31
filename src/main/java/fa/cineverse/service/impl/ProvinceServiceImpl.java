@@ -33,7 +33,7 @@ public class ProvinceServiceImpl implements ProvinceService {
 	 */
 	@Override
 	public List<Province> listAll() {
-		return (List<Province>) provinceRepository.findAll();
+		return (List<Province>) provinceRepository.findAllActiveList();
 	}
 
 	/**

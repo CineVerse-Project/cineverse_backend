@@ -27,6 +27,17 @@ public class MovieController {
 
 	@Autowired
 	private MovieService movieService;
+	
+	/**
+	 * @Author: DatNH20 
+	 * @Day: May 29, 2023 | @Time: 8:53:37 AM
+	 * @Return: ResponseEntity<Movie> 
+	 */
+	@GetMapping("{id}")
+	public ResponseEntity<Movie> getMovieById (@PathVariable("id") String id) {
+		Movie movie = movieService.get(id);
+		return new ResponseEntity<>(movie, HttpStatus.OK);
+	}
 
 	/**
 	 * @Author: DatNH20 

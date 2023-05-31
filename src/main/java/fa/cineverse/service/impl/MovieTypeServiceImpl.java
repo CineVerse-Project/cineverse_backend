@@ -35,7 +35,7 @@ public class MovieTypeServiceImpl implements MovieTypeService {
 	@Override
 	public List<MovieType> listAll() {
 		
-		return (List<MovieType>) movieTypeRepository.findAll();
+		return (List<MovieType>) movieTypeRepository.findAllActiveList();
 	}
 
 	/**

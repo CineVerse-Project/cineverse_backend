@@ -2,6 +2,7 @@ package fa.cineverse.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import fa.cineverse.dto.TicketDTO;
 import fa.cineverse.model.Ticket;
@@ -23,26 +24,10 @@ public class BookingServiceImpl implements BookingService {
 	@Autowired
 	private TicketRepository ticketRepository;
 
-	/**
-	 * @Author: HuongNT106
-	 * @Day: May 18, 2023 | @Time: 3:08:51 PM
-	 * TODO
-	 */
 	@Override
-	public Booking save(Booking booking, List<TicketDTO> ticketDTOList) {
-		LocalDateTime createdAt = LocalDateTime.now();
-		booking.setCreatedAt(createdAt);
-		Booking bookingSaved = bookingRepository.save(booking);
-		ticketDTOList.forEach(ticketDTO -> {
-			Ticket ticketUpdate = ticketRepository.findById(ticketDTO.getTicketId()).orElse(null);
-			if(ticketUpdate!=null){
-				ticketUpdate.setBooking(bookingSaved);
-				ticketUpdate.setBooked(true);
-				ticketUpdate.setUpdatedAt(createdAt);
-				ticketRepository.save(ticketUpdate);
-			}
-		});
-		return bookingSaved;
+	public Booking save(Booking booking) {
+		booking.setCreatedAt(LocalDateTime.now());
+		return bookingRepository.save(booking);
 	}
 
 	@Override
@@ -50,4 +35,21 @@ public class BookingServiceImpl implements BookingService {
 		return bookingRepository.findAll();
 	}
 
+	@Override
+	public Optional<Booking> findById(String id) {
+		return bookingRepository.findById(id);
+	}
+
+	@Override
+	public Booking changePaymentStatus(String id) {
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		List<Ticket> ticketList = ticketRepository.findTicketByBooking_BookingId(id);
+		if (booking != null) {
+			booking.setPaymentStatus(true);
+			booking.setUpdatedAt(LocalDateTime.now());
+			booking.setTicketTotal(ticketList.size());
+			bookingRepository.save(booking);
+		}
+		return booking;
+	}
 }
