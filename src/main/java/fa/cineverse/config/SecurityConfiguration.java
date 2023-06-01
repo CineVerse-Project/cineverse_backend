@@ -58,6 +58,7 @@ public class SecurityConfiguration{
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
+
     /**
      * securityFilterChain
      * 
@@ -74,7 +75,8 @@ public class SecurityConfiguration{
 	.and()
 	.authenticationProvider(authenticationProvider)
 	.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-	.authorizeHttpRequests().antMatchers("/**").permitAll()
+	.authorizeHttpRequests()
+	.antMatchers("/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {

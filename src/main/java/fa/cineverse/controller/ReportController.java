@@ -15,12 +15,25 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+/**
+ * ReportController
+ *
+ * @Day: 5/30/2023 9:09 AM
+ *
+ * @Version 1.0
+ *
+ * Copyright
+ *
+ * Modification Logs:
+ * DATE          AUTHOR       DESCRIPTION
+ * ---------------------------------------
+ * 5/30/2023      AnP1          Create
+ */
 @RestController
 @RequestMapping("/report")
 public class ReportController {
     @Autowired
     private ReportService reportService;
-
 
     /**
      * @Author: AnP1
@@ -339,19 +352,31 @@ public class ReportController {
     }
 
 
+    /**
+     * @Author: AnP1
+     * @Day: 5/30/2023 9:33 AM
+     * @Return: org.springframework.http.ResponseEntity<?>
+     * @Params: [date]
+     */
     @GetMapping("/top3MovieInMonth")
     public ResponseEntity<?> top3MovieInMonth(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         List<Top3MovieInMonth> top3MovieInMonthList = reportService.top3MovieInMonth(date);
-        if(top3MovieInMonthList.isEmpty()) {
+        if (top3MovieInMonthList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(top3MovieInMonthList, HttpStatus.OK);
     }
 
+    /**
+     * @Author: AnP1
+     * @Day: 5/30/2023 9:33 AM
+     * @Return: org.springframework.http.ResponseEntity<?>
+     * @Params: [date]
+     */
     @GetMapping("/top5TheaterInMonth")
     public ResponseEntity<?> top5TheaterInMonth(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         List<Top5TheaterInMonth> top5TheaterInMonthList = reportService.top5TheaterInMonth(date);
-        if(top5TheaterInMonthList.isEmpty()) {
+        if (top5TheaterInMonthList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(top5TheaterInMonthList, HttpStatus.OK);
