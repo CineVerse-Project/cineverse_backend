@@ -76,7 +76,6 @@ import net.bytebuddy.utility.RandomString;
 *
 */
 @RestController
-@RequestMapping("/api/v1")
 @CrossOrigin("*")
 public class UserController {
 
