@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,29 +31,30 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 import fa.cineverse.common.JwtRequestFilter;
 
 /**
-* SecurityConfiguration
-*
-* Version: 1.0
-*
-* Date: May 30, 2023
-*
-* Copyright
-*
-* Modification Log:
-*
-* DATE          AUTHOR          DESCRIPTION 
-* -----------------------------------------
-* May 30, 2023  HuuNQ               
-*
-*/
+ * SecurityConfiguration
+ *
+ * Version: 1.0
+ *
+ * Date: May 30, 2023
+ *
+ * Copyright
+ *
+ * Modification Log:
+ *
+ * DATE             AUTHOR          DESCRIPTION
+ * ----------------------------------------- 
+ * May 30,2023      HuuNQ
+ *
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true,securedEnabled = true)
 public class SecurityConfiguration{
 
+
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
-    
+
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
@@ -88,27 +88,28 @@ public class SecurityConfiguration{
 			
 	return http.build();
     }
-    
+
     /**
      * @Author: HuuNQ
-     * @param resourceLoader 
+     * @param resourceLoader
      * @Day: 23 May 2023 | @Time: 08:21:26
      * @return FreeMarkerConfigurationFactoryBean
      */
     @Bean(name = "emailConfigBean")
     @Primary
     public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration(ResourceLoader resourceLoader) {
-	FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
-	bean.setTemplateLoaderPath("classpath:/templates/");
-	return bean;
+        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
+        bean.setTemplateLoaderPath("classpath:/templates/");
+        return bean;
     }
 
     /**
      * persistentTokenRepository
+     * 
      * @return PersistentTokenRepository
      */
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-	return new InMemoryTokenRepositoryImpl();
+        return new InMemoryTokenRepositoryImpl();
     }
 }

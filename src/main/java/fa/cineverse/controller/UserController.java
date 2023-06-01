@@ -16,11 +16,13 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -57,6 +59,7 @@ import fa.cineverse.service.CustomerService;
 import fa.cineverse.service.EmailService;
 import fa.cineverse.service.UserService;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 
 /**
@@ -76,9 +79,11 @@ import net.bytebuddy.utility.RandomString;
 *
 */
 @RestController
-@RequestMapping("/api/v1")
 @CrossOrigin("*")
+@Slf4j
 public class UserController {
+	
+	private final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private JwtCommon jwtCommon;
@@ -187,16 +192,16 @@ public class UserController {
 								+ forgotPasswordRequest.getUsername());
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("Unsupported Encoding Exception {}",e.getMessage());
 			} catch (MessagingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("MessagingException {}",e.getMessage());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("IOException {}",e.getMessage());
 			} catch (TemplateException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("TemplateException {}",e.getMessage());
 			}
 			return ResponseEntity.ok("Gửi yêu cầu thành công, vui lòng kiểm tra mail!");
 		}
@@ -236,7 +241,6 @@ public class UserController {
 		Map<String, String> errorMap = new HashMap<>();
 		if (result.hasErrors()) {
 			result.getAllErrors().forEach(x -> errorMap.put(x.getCode(), x.getDefaultMessage()));
-
 			return ResponseEntity.badRequest().body(errorMap);
 		}
 
@@ -245,9 +249,9 @@ public class UserController {
 			user.setPassword(resetPassword.getNewPassword());
 			user.setResetPasswordToken(null);
 			userService.updateUser(user);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("Cập nhật mật khẩu mới thành công!");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.badRequest().body("Có lỗi xảy ra!");
 	}
 
     /**
@@ -291,7 +295,7 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@Secured({"ROLE_USER"})
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username, HttpServletRequest request) {
 		// Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng
@@ -300,9 +304,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if (!username.equals(usernameToken)) {
@@ -325,6 +326,7 @@ public class UserController {
      * @param request
      * @return  ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@PatchMapping("/user/profile-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult,
 			HttpServletRequest request) {
@@ -339,9 +341,6 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if (!userDTO.getUsername().equals(usernameToken)) {
 			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
@@ -354,6 +353,8 @@ public class UserController {
 				BeanUtils.copyProperties(userDTO, customer);
 				customerService.updateCustomer(customer);
 				return ResponseEntity.ok("Cập nhật thành công");
+			}else {
+				return ResponseEntity.badRequest().body("Sai mật khẩu, vui lòng kiểm tra lại");
 			}
 		}
 
@@ -370,6 +371,7 @@ public class UserController {
      * @param bindingResult 
      * @return  ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
 	public ResponseEntity<?> changePassword(@RequestParam("username") String username, HttpServletRequest request,
 			@Valid @RequestBody ChangePasswordRequest changePassword, BindingResult bindingResult) {
@@ -383,9 +385,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 
@@ -417,16 +416,17 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username") String username, HttpServletRequest request) {
-		User user = userService.findByUsername(username);
-
+		
+	    User user = userService.findByUsername(username);
+	    
 		if (user != null) {
 			Customer customer = customerService.findByUser(user);
 			List<Object[]> historyOrder = customerService.allHistoryOrderByCustomer(customer);
 			return ResponseEntity.ok().body(historyOrder);
 		}
-
 		return ResponseEntity.badRequest().build();
 
 	}
@@ -438,6 +438,7 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
 	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {
 
