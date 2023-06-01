@@ -224,7 +224,7 @@ public class ScheduleController {
                                                  @RequestParam("provinceId") String provinceId) {
         List<Schedule> schedules = scheduleService.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
         if (schedules.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }

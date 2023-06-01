@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,8 +72,9 @@ public class BookingController {
      * @Day: May 30, 2023 | @Time: 11:21:59 AM
      */
     @PostMapping("")
-    public ResponseEntity<?> createBooking() {
-        Customer customer = customerService.findCustomerByUser("huonghuong");
+    @Secured({"ROLE_USER"})
+    public ResponseEntity<?> createBooking(Authentication currentUser) {
+        Customer customer = customerService.findCustomerByUser(currentUser.getName());
         Booking booking = new Booking();
         booking.setCustomer(customer);
         Booking bookingSave = bookingService.save(booking);
@@ -105,8 +108,9 @@ public class BookingController {
      * @Day: May 30, 2023 | @Time: 11:22:42 AM
      */
     @GetMapping("customer")
-    public ResponseEntity<Customer> findCustomerByCurrentUser(){
-        Customer customer = customerService.findCustomerByUser("huonghuong");
+    @Secured({"ROLE_USER"})
+    public ResponseEntity<Customer> findCustomerByCurrentUser(Authentication currentUser){
+        Customer customer = customerService.findCustomerByUser(currentUser.getName());
         if (customer == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
