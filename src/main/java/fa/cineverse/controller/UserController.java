@@ -16,6 +16,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,6 +60,7 @@ import fa.cineverse.service.CustomerService;
 import fa.cineverse.service.EmailService;
 import fa.cineverse.service.UserService;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 
 /**
@@ -78,7 +81,10 @@ import net.bytebuddy.utility.RandomString;
 */
 @RestController
 @CrossOrigin("*")
+@Slf4j
 public class UserController {
+	
+	private final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private JwtCommon jwtCommon;
@@ -187,16 +193,16 @@ public class UserController {
 								+ forgotPasswordRequest.getUsername());
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("Unsupported Encoding Exception {}",e.getMessage());
 			} catch (MessagingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("MessagingException {}",e.getMessage());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("IOException {}",e.getMessage());
 			} catch (TemplateException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("TemplateException {}",e.getMessage());
 			}
 			return ResponseEntity.ok("Gửi yêu cầu thành công, vui lòng kiểm tra mail!");
 		}
@@ -236,7 +242,6 @@ public class UserController {
 		Map<String, String> errorMap = new HashMap<>();
 		if (result.hasErrors()) {
 			result.getAllErrors().forEach(x -> errorMap.put(x.getCode(), x.getDefaultMessage()));
-
 			return ResponseEntity.badRequest().body(errorMap);
 		}
 
@@ -245,9 +250,9 @@ public class UserController {
 			user.setPassword(resetPassword.getNewPassword());
 			user.setResetPasswordToken(null);
 			userService.updateUser(user);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("Cập nhật mật khẩu mới thành công!");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.badRequest().body("Có lỗi xảy ra!");
 	}
 
     /**
@@ -349,6 +354,8 @@ public class UserController {
 				BeanUtils.copyProperties(userDTO, customer);
 				customerService.updateCustomer(customer);
 				return ResponseEntity.ok("Cập nhật thành công");
+			}else {
+				return ResponseEntity.badRequest().body("Sai mật khẩu, vui lòng kiểm tra lại");
 			}
 		}
 
