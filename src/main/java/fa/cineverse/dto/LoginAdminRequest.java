@@ -10,11 +10,21 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
- * @author HuuNQ
- *
- * 12 May 2023
- * 
- */
+* LoginAdminRequest
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 public class LoginAdminRequest implements Validator{
 	private String username;
 	private String password;

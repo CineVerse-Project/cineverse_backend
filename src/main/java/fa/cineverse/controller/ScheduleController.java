@@ -22,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -57,7 +56,6 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(schedulePage, HttpStatus.OK);
-
     }
 
     /**
@@ -103,7 +101,6 @@ public class ScheduleController {
             errors.put("scheduleId", errorMessage);
         }
 
-
         Room room = roomService.findById(scheduleDTO.getScheduleId().getRoomId());
         if (room == null) {
             String errorMessage = "Room is not exist";
@@ -121,11 +118,9 @@ public class ScheduleController {
                 errors.put("scheduleId", errorMessage);
             }
         }
-
         if (!errors.isEmpty()) {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-
         Schedule scheduleCreate = new Schedule();
         BeanUtils.copyProperties(scheduleDTO, scheduleCreate);
         scheduleCreate.setRoom(room);
@@ -156,13 +151,11 @@ public class ScheduleController {
             String errorMessage = "Schedule ID is not exist";
             errors.put("scheduleId", errorMessage);
         }
-
         Room room = roomService.findById(scheduleDTO.getScheduleId().getRoomId());
         if (room == null) {
             String errorMessage = "Room ID is not exist";
             errors.put("roomId", errorMessage);
         }
-
         Movie movie = movieService.findById(scheduleDTO.getMovie().getMovieId());
         if (movie == null || movie.isDelete()) {
             String errorMessage = "Movie ID is not exist";
@@ -172,7 +165,6 @@ public class ScheduleController {
         if (!errors.isEmpty()) {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-
         Schedule scheduleCreate = new Schedule();
         BeanUtils.copyProperties(scheduleDTO, scheduleCreate);
         scheduleCreate.setRoom(room);
@@ -197,7 +189,6 @@ public class ScheduleController {
         return new ResponseEntity<>(schedule, HttpStatus.OK);
     }
 
-
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         String errorMessage = "Schedule date time does not match formart yyyy-MM-dd'T'HH:mm";
@@ -219,9 +210,9 @@ public class ScheduleController {
      */
     @GetMapping("/movie")
     public ResponseEntity<List<Schedule>> findScheduleByMovieAndScheduleAndProvince(@RequestParam String movieId,
-                                                 @RequestParam("scheduleDateTime")
-                                                 @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime scheduleDateTime,
-                                                 @RequestParam("provinceId") String provinceId) {
+                                                                                    @RequestParam("scheduleDateTime")
+                                                                                    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime scheduleDateTime,
+                                                                                    @RequestParam("provinceId") String provinceId) {
         List<Schedule> schedules = scheduleService.findScheduleByMovieAndScheduleAndProvince(movieId, scheduleDateTime, provinceId);
         if (schedules.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

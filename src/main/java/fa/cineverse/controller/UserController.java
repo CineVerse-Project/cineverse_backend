@@ -16,15 +16,19 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -55,17 +59,31 @@ import fa.cineverse.service.CustomerService;
 import fa.cineverse.service.EmailService;
 import fa.cineverse.service.UserService;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 
 /**
- * @author HuuNQ
- *
- *         12 May 2023
- *
- */
+* UserController
+*
+* Version: 1.0
+*
+* Date: May 30, 2023
+*
+* Copyright
+*
+* Modification Log:
+*
+* DATE          AUTHOR          DESCRIPTION 
+* -----------------------------------------
+* May 30, 2023  HuuNQ               
+*
+*/
 @RestController
 @CrossOrigin("*")
+@Slf4j
 public class UserController {
+	
+	private final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private JwtCommon jwtCommon;
@@ -86,9 +104,12 @@ public class UserController {
 	private PasswordEncoder passwordEncoder;
 
 	/**
+	 * userLoginRequest
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:17:05
-	 * @Return: ResponseEntity<?>
+	 * @param loginRequest 
+     * @param bindingResult 
+	 * @return ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/sign-in", method = RequestMethod.POST)
 	public ResponseEntity<?> userLoginRequest(@Valid @RequestBody LoginRequest loginRequest,
@@ -100,11 +121,10 @@ public class UserController {
 			errors.forEach(x -> errorMap.put(x.getField(), x.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(errorMap);
 		}
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwtGenerate = jwtCommon.generateToken(authentication);
-		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication
+		UserDetails user = (UserDetails) authentication
 				.getPrincipal();
 		List<String> userRoles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
@@ -112,9 +132,12 @@ public class UserController {
 	}
 
 	/**
-	 * @Author: HuuNQ
-	 * @Day: 19 May 2023 | @Time: 14:17:02
-	 * @Return: ResponseEntity<?>
+	 * adminLoginRequest
+     * @Author: HuuNQ
+     * @Day: 19 May 2023 | @Time: 14:17:02
+	 * @param loginAdminRequest 
+	 * @param bindingResult 
+     * @return  ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/sign-in/admin", method = RequestMethod.POST)
 	public ResponseEntity<?> adminLoginRequest(@Valid @RequestBody LoginAdminRequest loginAdminRequest,
@@ -129,7 +152,7 @@ public class UserController {
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				loginAdminRequest.getUsername(), loginAdminRequest.getPassword()));
 		String jwtGenerate = jwtCommon.generateToken(authentication);
-		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication
+		UserDetails user = (UserDetails) authentication
 				.getPrincipal();
 		List<String> userRoles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
@@ -137,9 +160,12 @@ public class UserController {
 	}
 
 	/**
+	 * forgotPassword
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:55
-	 * @Return: ResponseEntity<?>
+	 * @param forgotPasswordRequest 
+     * @param bindingResult 
+	 * @return  ResponseEntity<?>
 	 */
 	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
 	public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest,
@@ -166,16 +192,16 @@ public class UserController {
 								+ forgotPasswordRequest.getUsername());
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("Unsupported Encoding Exception {}",e.getMessage());
 			} catch (MessagingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("MessagingException {}",e.getMessage());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("IOException {}",e.getMessage());
 			} catch (TemplateException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.warn("TemplateException {}",e.getMessage());
 			}
 			return ResponseEntity.ok("Gửi yêu cầu thành công, vui lòng kiểm tra mail!");
 		}
@@ -183,11 +209,17 @@ public class UserController {
 
 	}
 
-	/**
-	 * @Author: HuuNQ
-	 * @Day: 19 May 2023 | @Time: 14:16:51
-	 * @Return: ResponseEntity<?>
-	 */
+    /**
+     * resetPassword
+     * @Author: HuuNQ
+     * @Day: 19 May 2023 | @Time: 14:16:55
+     * @param forgotPasswordRequest 
+     * @param username
+     * @param token 
+     * @param resetPassword 
+     * @param result 
+     * @return  ResponseEntity<?>
+     */
 	@RequestMapping(value = "/reset-password", method = RequestMethod.POST)
 	public ResponseEntity<?> resetPassword(@RequestParam("username") Optional<String> username,
 			@RequestParam("reset-password-token") Optional<String> token,
@@ -209,7 +241,6 @@ public class UserController {
 		Map<String, String> errorMap = new HashMap<>();
 		if (result.hasErrors()) {
 			result.getAllErrors().forEach(x -> errorMap.put(x.getCode(), x.getDefaultMessage()));
-
 			return ResponseEntity.badRequest().body(errorMap);
 		}
 
@@ -218,18 +249,19 @@ public class UserController {
 			user.setPassword(resetPassword.getNewPassword());
 			user.setResetPasswordToken(null);
 			userService.updateUser(user);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().body("Cập nhật mật khẩu mới thành công!");
 		}
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.badRequest().body("Có lỗi xảy ra!");
 	}
 
-	/**
-	 *
-	 * @Author: HuuNQ
-	 * @Day: 22 May 2023 | @Time: 08:54:08
-	 * @Return: ResponseEntity<?>
-	 */
-
+    /**
+     * resetPassword
+     * @Author: HuuNQ
+     * @Day: 19 May 2023 | @Time: 14:16:55
+     * @param userDTO 
+     * @param bindingResult 
+     * @return  ResponseEntity<?>
+     */
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
 		new UserDTO().validate(userDTO, bindingResult);
@@ -256,10 +288,14 @@ public class UserController {
 	}
 
 	/**
+     * information
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
+     * @param username 
+     * @param request 
+	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@GetMapping("/user/{username}")
 	public ResponseEntity<?> information(@PathVariable("username") String username, HttpServletRequest request) {
 		// Không tìm thấy người dùng? trường hợp nhập bậy // kiểm tra người dùng cùng
@@ -268,9 +304,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if (!username.equals(usernameToken)) {
@@ -285,10 +318,15 @@ public class UserController {
 	}
 
 	/**
+	 * updateInformation
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
+	 * @param userDTO 
+     * @param bindingResult 
+     * @param request
+     * @return  ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@PatchMapping("/user/profile-update")
 	public ResponseEntity<?> updateInformation(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult,
 			HttpServletRequest request) {
@@ -303,9 +341,6 @@ public class UserController {
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
 		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 		if (!userDTO.getUsername().equals(usernameToken)) {
 			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
@@ -318,6 +353,8 @@ public class UserController {
 				BeanUtils.copyProperties(userDTO, customer);
 				customerService.updateCustomer(customer);
 				return ResponseEntity.ok("Cập nhật thành công");
+			}else {
+				return ResponseEntity.badRequest().body("Sai mật khẩu, vui lòng kiểm tra lại");
 			}
 		}
 
@@ -325,10 +362,16 @@ public class UserController {
 	}
 
 	/**
+	 * changePassword
 	 * @Author: HuuNQ
 	 * @Day: 22 May 2023 | @Time: 08:42:06
-	 * @Return: ResponseEntity<?>
+	 * @param username 
+     * @param request 
+     * @param changePassword 
+     * @param bindingResult 
+     * @return  ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/change-password", method = RequestMethod.POST)
 	public ResponseEntity<?> changePassword(@RequestParam("username") String username, HttpServletRequest request,
 			@Valid @RequestBody ChangePasswordRequest changePassword, BindingResult bindingResult) {
@@ -342,9 +385,6 @@ public class UserController {
 		String token = null;
 		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
 			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		String usernameToken = jwtCommon.getUsernameFromToken(token);
 
@@ -369,33 +409,24 @@ public class UserController {
 	}
 
 	/**
+	 * historyOrder
 	 * @Author: HuuNQ
 	 * @Day: 19 May 2023 | @Time: 14:16:58
-	 * @Return: ResponseEntity<?>
+	 * @param username 
+     * @param request 
+	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/order-history", method = RequestMethod.GET)
 	public ResponseEntity<?> historyOrder(@RequestParam("username") String username, HttpServletRequest request) {
-		String tokenString = request.getHeader("Authorization");
-		String token = null;
-		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
-			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		String usernameToken = jwtCommon.getUsernameFromToken(token);
-		if (!username.equals(usernameToken)) {
-			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-		}
-
-		User user = userService.findByUsername(username);
-
+		
+	    User user = userService.findByUsername(username);
+	    
 		if (user != null) {
 			Customer customer = customerService.findByUser(user);
 			List<Object[]> historyOrder = customerService.allHistoryOrderByCustomer(customer);
 			return ResponseEntity.ok().body(historyOrder);
 		}
-
 		return ResponseEntity.badRequest().build();
 
 	}
@@ -403,22 +434,14 @@ public class UserController {
 	/**
 	 * @Author: HuuNQ
 	 * @Day: 23 May 2023 | @Time: 08:19:11
-	 * @Return: ResponseEntity<?>
+	 * @param username 
+     * @param request 
+	 * @return ResponseEntity<?>
 	 */
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
 	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {
-		String tokenString = request.getHeader("Authorization");
-		String token = null;
-		if (StringUtils.hasText(tokenString) && tokenString.startsWith("Bearer ")) {
-			token = tokenString.substring(7, tokenString.length());
-		}
-		if (!jwtCommon.validateJwtToken(token,request)) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		String usernameToken = jwtCommon.getUsernameFromToken(token);
-		if (!username.equals(usernameToken)) {
-			return ResponseEntity.badRequest().body("Sai thông tin đăng nhập!");
-		}
+
 		User user = userService.findByUsername(username);
 
 		if (user != null) {
