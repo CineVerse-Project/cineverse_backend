@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -48,6 +49,7 @@ import fa.cineverse.common.JwtRequestFilter;
 */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true,securedEnabled = true)
 public class SecurityConfiguration{
 
     @Autowired
@@ -72,13 +74,7 @@ public class SecurityConfiguration{
 	.and()
 	.authenticationProvider(authenticationProvider)
 	.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-	.authorizeHttpRequests()
-	.antMatchers(HttpMethod.POST,"/api/v1/sign-in/admin",
-				"/api/v1/sign-in","/api/v1/sign-up",
-				"/api/v1/reset-password","/api/v1/forgot-password")
-			.permitAll()
-			.antMatchers("/api/v1/user/**").hasRole("USER")
-			.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+	.authorizeHttpRequests().antMatchers("/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
