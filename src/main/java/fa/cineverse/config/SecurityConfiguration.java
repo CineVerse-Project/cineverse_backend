@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,8 +48,9 @@ import fa.cineverse.common.JwtRequestFilter;
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class SecurityConfiguration {
+@EnableMethodSecurity(prePostEnabled = true,securedEnabled = true)
+public class SecurityConfiguration{
+
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
@@ -69,23 +69,24 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authenticationProvider(authenticationProvider)
-                .addFilterAfter(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).authorizeHttpRequests()
-                .antMatchers(
-                        "/**")
-                .permitAll()
-                .anyRequest().authenticated().and().exceptionHandling()
-                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                    @Override
-                    public void commence(HttpServletRequest request, HttpServletResponse response,
-                            AuthenticationException authException) throws IOException, ServletException {
-                        // TODO Auto-generated method stub
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-                    }
-                });
-
-        return http.build();
+	http.cors().and().csrf().disable().
+	sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	.and()
+	.authenticationProvider(authenticationProvider)
+	.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+	.authorizeHttpRequests().antMatchers("/**").permitAll()
+			.anyRequest().authenticated()
+			.and()
+			.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
+        			@Override
+        			public void commence(HttpServletRequest request, HttpServletResponse response,
+        					AuthenticationException authException) throws IOException, ServletException {
+        				// TODO Auto-generated method stub
+        			    	response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage());
+        			}
+        		});
+			
+	return http.build();
     }
 
     /**
