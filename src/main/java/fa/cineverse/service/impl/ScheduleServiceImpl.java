@@ -17,6 +17,20 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * ScheduleServiceImpl
+ *
+ * @Day: 5/30/2023 9:09 AM
+ *
+ * @Version 1.0
+ *
+ * Copyright
+ *
+ * Modification Logs:
+ * DATE          AUTHOR       DESCRIPTION
+ * ---------------------------------------
+ * 5/29/2023      AnP1          Create
+ */
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
@@ -31,18 +45,22 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     /**
      * @Author: AnP1
-     * @Day: May 23, 2023 | @Time: 9:04:42 AM
-    */
+     * @Day: 5/30/2023 9:30 AM
+     * @Return: org.springframework.data.domain.Page<fa.cineverse.model.Schedule>
+     * @Params: [pageable, keyword]
+     */
     @Override
     public Page<Schedule> findAll(Pageable pageable, String keyword) {
         return scheduleRepository.findAll(pageable, keyword);
     }
 
+
     /**
      * @Author: AnP1
-     * @Day: May 23, 2023 | @Time: 9:04:45 AM
-    */
-
+     * @Day: 5/30/2023 9:30 AM
+     * @Return: fa.cineverse.model.Schedule
+     * @Params: [scheduleId]
+     */
     @Override
     public Schedule findById(ScheduleId scheduleId) {
         return scheduleRepository.findById(scheduleId).orElse(null);
@@ -51,9 +69,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     /**
      * @Author: AnP1
-     * @Day: May 23, 2023 | @Time: 9:04:48 AM
-    */
-
+     * @Day: 5/30/2023 9:30 AM
+     * @Return: fa.cineverse.model.Schedule
+     * @Params: [schedule]
+     */
     @Override
     public Schedule save(Schedule schedule) {
         LocalDateTime nowDateTime = LocalDateTime.now();
@@ -82,7 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     dayOfWeek.equals(DayOfWeek.SUNDAY)) {
                 increasePercent += 0.4;
             }
-            double actualPrice = price*(increasePercent+1);
+            double actualPrice = price * (increasePercent + 1);
             Ticket ticketCreate = new Ticket();
             ticketCreate.setSchedule(scheduleSaved);
             ticketCreate.setCreatedAt(now);
@@ -95,34 +114,42 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     /**
      * @Author: AnP1
-     * @Day: May 23, 2023 | @Time: 9:04:55 AM
-    */
-
+     * @Day: 5/30/2023 9:30 AM
+     * @Return: fa.cineverse.model.Schedule
+     * @Params: [schedule]
+     */
     @Override
     public Schedule update(Schedule schedule) {
         LocalDateTime nowDateTime = LocalDateTime.now();
         schedule.setUpdatedAt(nowDateTime);
-
-        String roomId = schedule.getScheduleId().getRoomId();
-
         return scheduleRepository.save(schedule);
     }
 
+
+    /**
+     * @Author: AnP1
+     * @Day: 5/30/2023 9:31 AM
+     * @Return: void
+     * @Params: [scheduleDateTime, roomId]
+     */
     @Override
     public void remove(LocalDateTime scheduleDateTime, String roomId) {
         scheduleRepository.removeAndUpdate(scheduleDateTime, roomId);
     }
 
-
+    /**
+     * @Author: AnP1
+     * @Day: 5/30/2023 9:31 AM
+     * @Return: java.util.List<fa.cineverse.dto.ScheduleCheckDTO>
+     * @Params: [scheduleDTO, movie]
+     */
     @Override
     public List<ScheduleCheckDTO> check(ScheduleDTO scheduleDTO, Movie movie) {
         LocalDateTime startDateTime = scheduleDTO.getScheduleId().getSheduleDateTime();
-        Float duration =  movie.getDuration();
+        Float duration = movie.getDuration();
         LocalDateTime endDateTime = startDateTime.plusMinutes(duration.longValue());
         String roomId = scheduleDTO.getScheduleId().getRoomId();
-        List<ScheduleCheckDTO>  list = scheduleRepository.checkSchedule(startDateTime,endDateTime,roomId);
-        System.out.println(list.size());
-        return list;
+        return scheduleRepository.checkSchedule(startDateTime, endDateTime, roomId);
     }
     
     /**

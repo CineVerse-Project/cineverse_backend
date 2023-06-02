@@ -14,17 +14,17 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
 	Customer findByUser(User username);
 	
-	@Query(value = "select b.booking_id,b.created_at,\r\n"
-			+ "			m.movie_name,\r\n"
-			+ "			s.shedule_date_time,t.seat_id,\r\n"
-			+ "			th.theater_name,group_concat(t.seat_id),m.image_url\r\n"
-			+ "			from booking b\r\n"
-			+ "			inner join ticket t on b.booking_id = t.booking_id\r\n"
-			+ "			inner join schedules on t.schedule_date_time = s.shedule_date_time\r\n"
-			+ "			inner join movie m on s.movie_id = m.movie_id\r\n"
-			+ "			inner join room r on s.room_id = r.room_id\r\n"
-			+ "			inner join theater th on r.theater_id = th.theater_id\r\n"
-			+ "			where customer_id = :customerId group by b.booking_id",
+	@Query(value = "select b.booking_id,b.created_at, \n" +
+			"  m.movie_name,\n" +
+			"  s.shedule_date_time,t.seat_id,\n" +
+			"  th.theater_name,group_concat(t.seat_id),m.image_url\n" +
+			"  from booking b\n" +
+			"  inner join ticket t on b.booking_id = t.booking_id\n" +
+			"  inner join `schedule`s on t.schedule_date_time = s.shedule_date_time\n" +
+			"  inner join movie m on s.movie_id = m.movie_id\n" +
+			"  inner join room r on s.room_id = r.room_id\n" +
+			"  inner join theater th on r.theater_id = th.theater_id\n" +
+			"  where customer_id = :customerId group by b.booking_id",
 			nativeQuery = true)
 	List<Object[]> listHistoryOrderByUsername(@Param("customerId") Integer customerId);
 	
