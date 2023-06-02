@@ -24,14 +24,13 @@ public class UserRole {
 	@ManyToOne
 	@JoinColumn(name="role_id")
 	private Role role;
-	
+
 	public UserRole() {
 		super();
 	}
 
-	public UserRole(int userRoleId, User user, Role role) {
+	public UserRole( User user, Role role) {
 		super();
-		this.userRoleId = userRoleId;
 		this.user = user;
 		this.role = role;
 	}
