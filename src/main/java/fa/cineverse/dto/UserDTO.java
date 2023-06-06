@@ -36,6 +36,7 @@ public class UserDTO implements Validator{
 	private String username;
 	private String password;
 	private String address;
+	private String imgUrl;
 	
 	public UserDTO() {
 		super();
@@ -53,7 +54,7 @@ public class UserDTO implements Validator{
 	}
 	
 	public UserDTO(String customerId, String fullName, LocalDate birthday, String phoneNumber, boolean gender,
-			String username, String password, String address) {
+			String username, String password, String address, String imgUrl) {
 		super();
 		this.customerId = customerId;
 		this.fullName = fullName;
@@ -63,6 +64,7 @@ public class UserDTO implements Validator{
 		this.username = username;
 		this.password = password;
 		this.address = address;
+		this.imgUrl = imgUrl;
 	}
 	public String getFullName() {
 		return fullName;
@@ -114,6 +116,14 @@ public class UserDTO implements Validator{
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
+	
+	public String getImgUrl() {
+		return imgUrl;
+	}
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+	
 	@Override
 	public boolean supports(Class<?> clazz) {
 		// TODO Auto-generated method stub
@@ -129,19 +139,19 @@ public class UserDTO implements Validator{
 		}
 		
 		if("".equals(customerDTO.getFullName().trim())) {
-			errors.rejectValue("email", "email error","Không được bỏ trống!");
+			errors.rejectValue("fullName", "fullName error","Không được bỏ trống!");
 		}
 		
 		if("".equals(customerDTO.getPassword().trim())) {
-			errors.rejectValue("email", "email error","Không được bỏ trống!");
+			errors.rejectValue("password", "password error","Không được bỏ trống!");
 		}
 		
 		if("".equals(customerDTO.getPhoneNumber().trim()) || customerDTO.getPhoneNumber() == null) {
-			errors.rejectValue("email", "email error","Không được bỏ trống!");
+			errors.rejectValue("phoneNumber", "phoneNumber error","Không được bỏ trống!");
 		}
 		
 		if(customerDTO.getBirthday() == null) {
-			errors.rejectValue("email", "email error","Không được bỏ trống!");
+			errors.rejectValue("birthday", "birthday error","Không được bỏ trống!");
 		}
 	}
 

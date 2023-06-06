@@ -438,19 +438,28 @@ public class UserController {
      * @param request 
 	 * @return ResponseEntity<?>
 	 */
-	@Secured({"ROLE_USER"})
-	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
-	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {
-
+//	@Secured({"ROLE_USER"})
+//	@RequestMapping(value = "/user/earn-points", method = RequestMethod.GET)
+//	public ResponseEntity<?> earnPoints(@RequestParam("username") String username, HttpServletRequest request) {
+//
+//		User user = userService.findByUsername(username);
+//
+//		if (user != null) {
+//			Customer customer = customerService.findByUser(user);
+//			List<Object[]> earnPoints = customerService.listEarnPoints(customer);
+//			return ResponseEntity.ok().body(earnPoints);
+//		}
+//
+//		return ResponseEntity.badRequest().build();
+//	}
+	
+	@RequestMapping(value="/user/check-exist",method = RequestMethod.GET)
+	public ResponseEntity<?> checkExistUsername(@RequestParam("username") String username)
+	{
 		User user = userService.findByUsername(username);
-
-		if (user != null) {
-			Customer customer = customerService.findByUser(user);
-			List<Object[]> earnPoints = customerService.listEarnPoints(customer);
-			return ResponseEntity.ok().body(earnPoints);
+		if(user == null) {
+			return ResponseEntity.notFound().build();
 		}
-
-		return ResponseEntity.badRequest().build();
-
+		return ResponseEntity.ok("Email đã tồn tại trong hệ thống!");
 	}
 }

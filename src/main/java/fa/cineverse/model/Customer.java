@@ -33,6 +33,8 @@ public class Customer {
 	@Column(columnDefinition = "DATE")
 	private LocalDate birthday;
 	private boolean gender;
+	@Column(name="img_url",columnDefinition = "VARCHAR(255)")
+	private String imgUrl;
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="username")
 	private User user;
@@ -55,7 +57,7 @@ public class Customer {
 	
 
 	public Customer(int customerId, String fullName, String email, String address, String phoneNumber,
-			LocalDate birthday, boolean gender, User user) {
+			LocalDate birthday, boolean gender, String imgUrl, User user) {
 		super();
 		this.customerId = customerId;
 		this.fullName = fullName;
@@ -64,6 +66,7 @@ public class Customer {
 		this.phoneNumber = phoneNumber;
 		this.birthday = birthday;
 		this.gender = gender;
+		this.imgUrl = imgUrl;
 		this.user = user;
 	}
 
@@ -118,6 +121,14 @@ public class Customer {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
 	
 }

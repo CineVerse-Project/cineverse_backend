@@ -11,37 +11,40 @@ import fa.cineverse.model.User;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Customer findByUser_Username(String username);
-
+    
 	Customer findByUser(User username);
 	
-	@Query(value = "select b.booking_id,b.created_at, \n" +
-			"  m.movie_name,\n" +
-			"  s.shedule_date_time,t.seat_id,\n" +
-			"  th.theater_name,group_concat(t.seat_id),m.image_url\n" +
-			"  from booking b\n" +
-			"  inner join ticket t on b.booking_id = t.booking_id\n" +
-			"  inner join `schedule`s on t.schedule_date_time = s.shedule_date_time\n" +
-			"  inner join movie m on s.movie_id = m.movie_id\n" +
-			"  inner join room r on s.room_id = r.room_id\n" +
-			"  inner join theater th on r.theater_id = th.theater_id\n" +
-			"  where customer_id = :customerId group by b.booking_id",
+	@Query(value = "select b.booking_id,"
+			+ " b.created_at,"
+			+ " m.movie_name,"
+			+ " t.schedule_date_time,"
+			+ " th.theater_name,"
+			+ " group_concat(t.seat_id),"
+			+ " m.image_url,"
+			+ " b.payment_status from ticket t right join booking b on t.booking_id = b.booking_id"
+			+ " left join schedule s on t.schedule_date_time = s.shedule_date_time"
+			+ " left join movie m on s.movie_id = m.movie_id"
+			+ " left join room r on s.room_id = r.room_id"
+			+ " left join theater th on r.theater_id = th.theater_id"
+			+ " inner join customer c on c.customer_id = b.customer_id"
+			+ " where c.customer_id = (:customerId) group by b.booking_id ",
 			nativeQuery = true)
 	List<Object[]> listHistoryOrderByUsername(@Param("customerId") Integer customerId);
 	
-	
-	@Query(value = "select b.booking_id,b.created_at,\r\n"
-			+ "m.movie_name,\r\n"
-			+ "s.shedule_date_time,t.seat_id,\r\n"
-			+ "th.theater_name,group_concat(t.seat_id),p.total_money,(0.05 * (p.total_money/1000)) as earn_points \r\n"
-			+ "from booking b \r\n"
-			+ "inner join ticket t on b.booking_id = t.booking_id\r\n"
-			+ "inner join `schedule`s on t.schedule_date_time = s.shedule_date_time\r\n"
-			+ "inner join movie m on s.movie_id = m.movie_id\r\n"
-			+ "inner join room r on s.room_id = r.room_id\r\n"
-			+ "inner join theater th on r.theater_id = th.theater_id\r\n"
-			+ "inner join payment p on b.booking_id = p.booking_id\r\n"
-			+ "where customer_id = :customerId group by b.booking_id",
-			nativeQuery = true)
-	List<Object[]> listEarnPointsByUsername(@Param("customerId") Integer customerId);
+//	
+//	@Query(value = "select b.booking_id,b.created_at,\r\n"
+//			+ "m.movie_name,\r\n"
+//			+ "s.shedule_date_time,t.seat_id,\r\n"
+//			+ "th.theater_name,group_concat(t.seat_id),p.total_money,(0.05 * (p.total_money/1000)) as earn_points \r\n"
+//			+ "from booking b \r\n"
+//			+ "inner join ticket t on b.booking_id = t.booking_id\r\n"
+//			+ "inner join `schedule`s on t.schedule_date_time = s.shedule_date_time\r\n"
+//			+ "inner join movie m on s.movie_id = m.movie_id\r\n"
+//			+ "inner join room r on s.room_id = r.room_id\r\n"
+//			+ "inner join theater th on r.theater_id = th.theater_id\r\n"
+//			+ "inner join payment p on b.booking_id = p.booking_id\r\n"
+//			+ "where customer_id = :customerId group by b.booking_id",
+//			nativeQuery = true)
+//	List<Object[]> listEarnPointsByUsername(@Param("customerId") Integer customerId);
 }
 

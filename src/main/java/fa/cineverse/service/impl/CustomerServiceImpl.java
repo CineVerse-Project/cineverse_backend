@@ -57,18 +57,18 @@ public class CustomerServiceImpl implements CustomerService {
 
 	/**
 	 * @author HuuNQ
-	 *
+	 *s
 	 */
 	@Override
 	public Customer findByUser(User user) {
 		// TODO Auto-generated method stub
 		return customerRepository.findByUser(user);
 	}
-
-	@Override
-	public List<Object[]> listEarnPoints(Customer customer) {
-		// TODO Auto-generated method stub
-		return customerRepository.listEarnPointsByUsername(customer.getCustomerId());
-	}
+//
+//	@Override
+//	public List<Object[]> listEarnPoints(Customer customer) {
+//		// TODO Auto-generated method stub
+//		return customerRepository.listEarnPointsByUsername(customer.getCustomerId());
+//	}
 
 }

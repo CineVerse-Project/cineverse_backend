@@ -16,7 +16,7 @@ public interface CustomerService {
 
     Customer findByUser(User user);
 
-    List<Object[]> listEarnPoints(Customer customer);
+//    List<Object[]> listEarnPoints(Customer customer);
 
 
 }
